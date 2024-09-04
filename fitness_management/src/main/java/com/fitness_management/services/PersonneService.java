@@ -56,24 +56,16 @@ public class PersonneService {
         return savedPersonne;
     }
 
-    public Optional<Personne> authenticatePersonne(String email, String rawPassword) {
-        logger.info("Authenticating personne with email: {}", email);
-        Optional<Personne> optionalPersonne = findByEmail(email);
+    public Optional<Personne> authenticatePersonne(String email, String motDePasse) {
+        Optional<Personne> personne = personneRepository.findByEmail(email);
 
-        if (optionalPersonne.isPresent()) {
-            Personne personne = optionalPersonne.get();
-            if (passwordEncoder.matches(rawPassword, personne.getMotDePasse())) {
-                logger.info("Authentication successful for email: {}", email);
-                return Optional.of(personne);
-            } else {
-                logger.warn("Authentication failed: Incorrect password for email: {}", email);
-            }
-        } else {
-            logger.warn("Authentication failed: No personne found with email: {}", email);
+        if (personne.isPresent() && passwordEncoder.matches(motDePasse, personne.get().getMotDePasse())) {
+            return personne;
         }
 
         return Optional.empty();
     }
+
 
     public Optional<Personne> findByEmail(String email) {
         return personneRepository.findByEmail(email);

@@ -22,6 +22,8 @@ import java.util.Collections;
         @JsonSubTypes.Type(value = Admin.class, name = "admin"),
         @JsonSubTypes.Type(value = Coach.class, name = "coach")
 })
+
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -83,4 +85,3 @@ public abstract class Personne implements UserDetails {
     }
 
 }
-

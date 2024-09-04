@@ -74,6 +74,7 @@ public class PersonneController {
     }
 
     // Delete a Personne by ID
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePersonne(@PathVariable Long id) {
         personneService.deletePersonne(id);

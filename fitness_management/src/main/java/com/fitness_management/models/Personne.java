@@ -1,6 +1,5 @@
 package com.fitness_management.models;
 
-
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
@@ -14,6 +13,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
@@ -22,8 +23,6 @@ import java.util.Collections;
         @JsonSubTypes.Type(value = Admin.class, name = "admin"),
         @JsonSubTypes.Type(value = Coach.class, name = "coach")
 })
-
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -46,8 +45,27 @@ public abstract class Personne implements UserDetails {
     @Column(nullable = false)
     private String motDePasse;
 
+
+
+    @Column(name = "username", unique = true, nullable = false)
+    private String username;
+
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "profileImage_Id")
+    private Image profileImage;
+
+
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<String> roles = new HashSet<>();
+
+    public boolean hasRole(String role) {
+        return roles.contains(role);
+    }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -83,5 +101,11 @@ public abstract class Personne implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
+    @PrePersist
+    @PreUpdate
+    private void setUsername() {
+        if (this.username == null) {
+            this.username = this.email;
+        }
+    }
 }

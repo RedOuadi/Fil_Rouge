@@ -1,14 +1,19 @@
 package com.fitness_management.controllers;
 
 import com.fitness_management.models.Personne;
+import com.fitness_management.models.Role;
+import com.fitness_management.security.JwtAuth;
 import com.fitness_management.services.PersonneService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -16,8 +21,13 @@ import java.util.Optional;
 public class PersonneController {
 
     private final PersonneService personneService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
+    private JwtAuth jwtAuth;
+
+
     public PersonneController(PersonneService personneService) {
         this.personneService = personneService;
     }
@@ -31,14 +41,37 @@ public class PersonneController {
 
     // Login a Personne
     @PostMapping("/login")
-    public ResponseEntity<String> loginPersonne(@RequestBody Personne loginDetails) {
-        Optional<Personne> authenticatedPersonne = personneService.authenticatePersonne(loginDetails.getEmail(), loginDetails.getMotDePasse());
-        if (authenticatedPersonne.isPresent()) {
-            return new ResponseEntity<>("Login successful", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Invalid credentials", HttpStatus.UNAUTHORIZED);
+    public ResponseEntity<?> loginUser(@RequestBody Map<String, String> userRequest) {
+        String email = userRequest.get("email");
+        String rawPassword = userRequest.get("motDePasse");
+
+        if (email == null || rawPassword == null) {
+            return ResponseEntity.badRequest().body("Email and password are required");
         }
+
+        Optional<Personne> optionalUser = personneService.findByEmail(email);
+        if (optionalUser.isPresent()) {
+            Personne foundUser = optionalUser.get();
+            String encodedPassword = foundUser.getMotDePasse();
+
+            if (passwordEncoder.matches(rawPassword, encodedPassword)) {
+                Role role = foundUser.getRole();
+                String token = jwtAuth.generateToken(foundUser.getEmail(), String.valueOf(role));
+
+                Map<String, String> response = new HashMap<>();
+                response.put("token", token);
+                response.put("role", String.valueOf(role));
+
+                return ResponseEntity.ok(response);
+            } else {
+                return ResponseEntity.status(401).body("Invalid password");
+            }
+        }
+        return ResponseEntity.status(401).body("Invalid email or password");
     }
+
+
+
 
     // Create a new Personne
     @PostMapping

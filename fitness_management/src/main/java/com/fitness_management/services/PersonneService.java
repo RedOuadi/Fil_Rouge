@@ -2,6 +2,7 @@ package com.fitness_management.services;
 
 import com.fitness_management.models.*;
 import com.fitness_management.repositories.PersonneRepository;
+import com.fitness_management.security.JwtAuth;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -10,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -21,6 +24,9 @@ public class PersonneService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtAuth jwtAuth;
 
     private static final Logger logger = LoggerFactory.getLogger(PersonneService.class);
 
@@ -60,10 +66,15 @@ public class PersonneService {
         Optional<Personne> personne = personneRepository.findByEmail(email);
 
         if (personne.isPresent() && passwordEncoder.matches(motDePasse, personne.get().getMotDePasse())) {
-            return personne;
+            return personne;  // Return the authenticated person
         }
 
         return Optional.empty();
+    }
+
+    public String getRole(Personne personne) {
+        // Assuming that the role is stored in the Personne entity or its subclasses
+        return personne.getRole().toString();
     }
 
 

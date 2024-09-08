@@ -113,5 +113,20 @@ public class PersonneController {
         personneService.deletePersonne(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping("/count-users")
+    public ResponseEntity<Long> countUsers() {
+        long userCount = personneService.countUsers();
+        return new ResponseEntity<>(userCount, HttpStatus.OK);
+    }
+
+    // Count coaches
+    @GetMapping("/count-coaches")
+    public ResponseEntity<Long> countCoaches() {
+        long coachCount = personneService.countCoaches();
+        return new ResponseEntity<>(coachCount, HttpStatus.OK);
+    }
+
+
 }
 

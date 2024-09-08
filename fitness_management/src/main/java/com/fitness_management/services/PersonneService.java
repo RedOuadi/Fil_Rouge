@@ -132,4 +132,13 @@ public class PersonneService {
         }
         throw new EntityNotFoundException("Personne not found with id: " + id);
     }
+    public long countUsers() {
+        return personneRepository.countByRole(Role.ROLE_UTILISATEUR);
+    }
+
+    public long countCoaches() {
+        return personneRepository.countByRole(Role.ROLE_COACH);
+    }
+
+
 }

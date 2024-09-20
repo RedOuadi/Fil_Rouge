@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class PersonneService {
+public class PersonneService  {
 
     @Autowired
     private PersonneRepository personneRepository;
@@ -139,6 +139,15 @@ public class PersonneService {
     public long countCoaches() {
         return personneRepository.countByRole(Role.ROLE_COACH);
     }
+
+    public List<Personne> getUsers() {
+        return personneRepository.findAllByRole(Role.ROLE_UTILISATEUR);
+    }
+
+    public List<Personne> getCoaches() {
+        return personneRepository.findAllByRole(Role.ROLE_COACH);
+    }
+
 
 
 }

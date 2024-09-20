@@ -17,5 +17,5 @@ public class Admin extends Personne {
         this.setRole(Role.ROLE_ADMIN);
     }
 
-    // Méthodes spécifiques à Admin
+
 }

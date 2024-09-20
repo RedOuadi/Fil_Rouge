@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+
+@CrossOrigin(origins = "http://localhost:4200/")
 @RestController
 @RequestMapping("/api/users")
 public class PersonneController {
@@ -95,6 +97,7 @@ public class PersonneController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+
     // Update a Personne by ID
     @PutMapping("/{id}")
     public ResponseEntity<Personne> updatePersonne(@PathVariable Long id, @RequestBody Personne personneDetails) {
@@ -106,7 +109,7 @@ public class PersonneController {
         }
     }
 
-    // Delete a Personne by ID
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePersonne(@PathVariable Long id) {
@@ -126,6 +129,19 @@ public class PersonneController {
         long coachCount = personneService.countCoaches();
         return new ResponseEntity<>(coachCount, HttpStatus.OK);
     }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<Personne>> getUsers() {
+        List<Personne> users = personneService.getUsers();
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping("/coaches")
+    public ResponseEntity<List<Personne>> getCoaches() {
+        List<Personne> coaches = personneService.getCoaches();
+        return new ResponseEntity<>(coaches, HttpStatus.OK);
+    }
+
 
 
 }

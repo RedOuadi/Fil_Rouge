@@ -45,6 +45,9 @@ public abstract class Personne implements UserDetails {
     @Column(nullable = false)
     private String motDePasse;
 
+    @Enumerated(EnumType.STRING)
+    private Genre genre;
+
 
 
     @Column(name = "username", unique = true, nullable = false)

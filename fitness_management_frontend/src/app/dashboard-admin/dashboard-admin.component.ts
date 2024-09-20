@@ -10,10 +10,15 @@ export class DashboardAdminComponent implements OnInit {
   totalUsers: number = 0;
   totalCoaches: number = 0;
 
+  activeSection: string ='red' ;
+
   constructor(private personneService: PersonneService) {}
 
   ngOnInit(): void {
     this.loadCounts();
+  }
+  setActive(section: string) {
+    this.activeSection = section;
   }
 
   private loadCounts() {

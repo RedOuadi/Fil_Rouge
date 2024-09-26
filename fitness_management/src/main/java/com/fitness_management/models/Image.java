@@ -7,17 +7,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Setter @Getter
-@AllArgsConstructor @NoArgsConstructor
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Image {
+
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String imageUrl;
+    private String cloudinaryImageId;
 
     @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = true)
-    private User user;
+    @OneToOne(mappedBy = "profileImage")  // One-to-One relationship with Personne
+    private Personne personne;
 }

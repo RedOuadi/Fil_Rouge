@@ -29,7 +29,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "Personne")
-public abstract class Personne implements UserDetails {
+public  class Personne implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

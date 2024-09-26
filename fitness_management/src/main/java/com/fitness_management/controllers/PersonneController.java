@@ -1,15 +1,25 @@
 package com.fitness_management.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fitness_management.dto.PersonneDTO;
 import com.fitness_management.models.Personne;
 import com.fitness_management.models.Role;
 import com.fitness_management.security.JwtAuth;
 import com.fitness_management.services.PersonneService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
+import jakarta.validation.ValidationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartException;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +29,7 @@ import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:4200/")
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/personnes")
 public class PersonneController {
 
     private final PersonneService personneService;
@@ -30,16 +40,76 @@ public class PersonneController {
     private JwtAuth jwtAuth;
 
 
+    private static final Logger logger = LoggerFactory.getLogger(PersonneController.class);
+
     public PersonneController(PersonneService personneService) {
         this.personneService = personneService;
     }
 
     // Register a new Personne
-    @PostMapping("/register")
-    public ResponseEntity<Personne> registerPersonne(@RequestBody Personne personne) {
-        Personne registeredPersonne = personneService.registerPersonne(personne);
-        return new ResponseEntity<>(registeredPersonne, HttpStatus.CREATED);
+    // Register a new Personne with Multipart support
+    @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<PersonneDTO> registerPersonne(
+            @RequestPart("personne") String personneJson,  // Use String to receive raw JSON for deserialization
+            @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) {
+
+        // Log the received request
+        logger.info("Received POST request to register a new personne");
+
+        // Log the image information
+        if (profileImage != null) {
+            logger.info("Profile image received with size: {}", profileImage.getSize());
+        } else {
+            logger.info("No profile image received");
+        }
+
+        PersonneDTO personneDTO = null;  // Declare personneDTO before the try block
+
+        try {
+            // Parse the JSON string into a PersonneDTO object using ObjectMapper
+            ObjectMapper objectMapper = new ObjectMapper();
+            personneDTO = objectMapper.readValue(personneJson, PersonneDTO.class);
+            Role.valueOf(personneDTO.getRole());
+
+            // Log the parsed data
+            logger.info("Personne details: Email: {}", personneDTO.getEmail());
+
+            // Register the personne
+            PersonneDTO registeredPersonne = personneService.registerPersonne(personneDTO, profileImage);
+
+            // Log success
+            logger.info("Personne with email: {} successfully registered.", personneDTO.getEmail());
+
+            // Return successful response
+            return new ResponseEntity<>(registeredPersonne, HttpStatus.CREATED);
+
+        } catch (IllegalArgumentException e) {
+            logger.error("Invalid role: {}", personneDTO.getRole());
+            return ResponseEntity.badRequest().body(null);
+        }
+        catch (JsonProcessingException e) {
+            // Handle JSON parsing errors
+            logger.error("Error parsing personne JSON: {}", e.getMessage(), e);
+            return ResponseEntity.badRequest().body(null);
+
+        } catch (MultipartException e) {
+            // Handle multipart/form-data specific exceptions
+            logger.error("Multipart error occurred while uploading profile image: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+
+        } catch (ValidationException e) {
+            // Handle validation errors
+            logger.error("Validation error for personne with email: {}: {}",
+                    personneDTO != null ? personneDTO.getEmail() : "unknown", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+
+        } catch (Exception e) {
+            // Handle general exceptions
+            logger.error("An error occurred while registering personne: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
+
 
     // Login a Personne
     @PostMapping("/login")
@@ -76,11 +146,11 @@ public class PersonneController {
 
 
     // Create a new Personne
-    @PostMapping
-    public ResponseEntity<Personne> createPersonne(@RequestBody Personne personne) {
-        Personne createdPersonne = personneService.registerPersonne(personne);
-        return new ResponseEntity<>(createdPersonne, HttpStatus.CREATED);
-    }
+//    @PostMapping
+//    public ResponseEntity<Personne> createPersonne(@RequestBody Personne personne) {
+//        Personne createdPersonne = personneService.registerPersonne(personne);
+//        return new ResponseEntity<>(createdPersonne, HttpStatus.CREATED);
+//    }
 
     // Get all Personnes
     @GetMapping

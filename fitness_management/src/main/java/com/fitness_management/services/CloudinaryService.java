@@ -5,6 +5,8 @@ import com.cloudinary.Cloudinary;
 import com.fitness_management.exception.FuncErrorException;
 
 import com.fitness_management.models.CloudinaryResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,20 +21,38 @@ public class CloudinaryService  {
     @Autowired
     private Cloudinary cloudinary;
 
+    private static final Logger logger = LoggerFactory.getLogger(CloudinaryService.class);
+
 
     public CloudinaryResponse uploadFile(MultipartFile file, String fileName, String resourceType) {
+        if (file == null || file.isEmpty()) {
+            logger.error("File is null or empty");
+            throw new FuncErrorException("File is null or empty");
+        }
+
         try {
-            final Map<String, Object> result = cloudinary.uploader().upload(file.getBytes(), Map.of(
+            logger.info("Attempting to upload file: {}", fileName);
+            Map<String, Object> params = Map.of(
                     "public_id", "nhndev/product/" + fileName,
                     "resource_type", resourceType
-            ));
-            final String url = (String) result.get("secure_url");
-            final String publicId = (String) result.get("public_id");
+            );
+
+            Map<String, Object> result = cloudinary.uploader().upload(file.getBytes(), params);
+
+            String url = (String) result.get("secure_url");
+            String publicId = (String) result.get("public_id");
+            logger.info("File uploaded successfully. URL: {}, Public ID: {}", url, publicId);
+
             return CloudinaryResponse.builder().publicId(publicId).url(url).build();
+        } catch (IOException e) {
+            logger.error("IO error during file upload: {}", e.getMessage(), e);
+            throw new FuncErrorException("IO error during file upload: " + e.getMessage());
         } catch (Exception e) {
-            throw new FuncErrorException("Failed to upload file");
+            logger.error("Unexpected error during file upload: {}", e.getMessage(), e);
+            throw new FuncErrorException("Unexpected error during file upload: " + e.getMessage());
         }
     }
+
 
 //
 //    @Override

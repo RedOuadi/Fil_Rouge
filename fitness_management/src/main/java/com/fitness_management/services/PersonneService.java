@@ -1,8 +1,11 @@
 package com.fitness_management.services;
 
+import com.fitness_management.dto.PersonneDTO;
+import com.fitness_management.mapper.PersonneMapper;
 import com.fitness_management.models.*;
 import com.fitness_management.repositories.PersonneRepository;
 import com.fitness_management.security.JwtAuth;
+import com.fitness_management.util.FileUploadUtil;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -10,11 +13,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+
+
 
 @Service
 public class PersonneService  {
@@ -28,38 +32,50 @@ public class PersonneService  {
     @Autowired
     private JwtAuth jwtAuth;
 
+    @Autowired
+    private CloudinaryService cloudinaryService;
+
+    @Autowired
+    private PersonneMapper personneMapper;
     private static final Logger logger = LoggerFactory.getLogger(PersonneService.class);
 
     @Transactional
-    public Personne registerPersonne(Personne personne) {
-        logger.info("Registering new personne: {}", personne.getEmail());
-        logger.info("Personne type: {}", personne.getClass().getSimpleName());
+    public PersonneDTO registerPersonne(PersonneDTO personneDTO, MultipartFile profileImage) {
+        logger.info("Registering new personne: {}", personneDTO.getEmail());
 
-        // Encode the password
+
+        Personne personne = personneMapper.toEntity(personneDTO);
         personne.setMotDePasse(passwordEncoder.encode(personne.getMotDePasse()));
 
-        // Check for specific roles and assign them
+        // Assign roles based on instance type
         if (personne instanceof User) {
-            logger.info("Registering a User");
-            User user = (User) personne;
-            user.setRole(Role.ROLE_UTILISATEUR);
-            logger.info("User niveauFitness: {}", user.getNiveauFitness());
+            ((User) personne).setRole(Role.ROLE_UTILISATEUR);
         } else if (personne instanceof Admin) {
-            logger.info("Registering an Admin");
-            Admin admin = (Admin) personne;
-            admin.setRole(Role.ROLE_ADMIN);
+            ((Admin) personne).setRole(Role.ROLE_ADMIN);
         } else if (personne instanceof Coach) {
-            logger.info("Registering a Coach");
-            Coach coach = (Coach) personne;
-            coach.setRole(Role.ROLE_COACH);
-            logger.info("Coach certification: {}", coach.getCertification());
+            ((Coach) personne).setRole(Role.ROLE_COACH);
+        }
+        FileUploadUtil.assertAllowed(profileImage, FileUploadUtil.IMAGE_PATTERN);
+
+        // Extract the base name and extension from the original file name
+        String originalFileName = profileImage.getOriginalFilename();
+        String baseName = originalFileName != null ? originalFileName.substring(0, originalFileName.lastIndexOf('.')) : "profile";
+        String extension = originalFileName != null ? originalFileName.substring(originalFileName.lastIndexOf('.') + 1) : "png";
+
+        String fileName = FileUploadUtil.getFileName(baseName, extension);
+        if (profileImage != null && !profileImage.isEmpty()) {
+            CloudinaryResponse response = cloudinaryService.uploadFile(profileImage,fileName, "image");
+            Image image = new Image();
+            image.setImageUrl(response.getUrl());
+            image.setCloudinaryImageId(response.getPublicId());
+            personne.setProfileImage(image);
         }
 
         // Save the personne
         Personne savedPersonne = personneRepository.save(personne);
         logger.info("Personne saved with ID: {}", savedPersonne.getId());
 
-        return savedPersonne;
+        return personneMapper.toDTO(savedPersonne);
     }
 
     public Optional<Personne> authenticatePersonne(String email, String motDePasse) {

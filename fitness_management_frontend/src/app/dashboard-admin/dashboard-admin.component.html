@@ -1,35 +1,41 @@
-<div class="admin-dashboard">
+<div class="flex h-screen">
   <!-- Sidebar -->
-  <div class="sidebar">
-    <div class="sidebar-header">
-      <h2>Admin Panel</h2>
+  <aside class="w-64 bg-gray-800 text-white">
+    <div class="p-6">
+      <h2 class="text-2xl font-bold">Dashboard Admin</h2>
     </div>
-    <ul class="nav-links">
-      <li (click)="setActive('users')">
-        <a [routerLink]="['/admin/users']" routerLinkActive="active">
-          <i class="fa fa-users"></i> Gestion des Utilisateurs
-        </a>
-      </li>
-      <li (click)="setActive('coaches')">
-        <a [routerLink]="['/admin/coaches']" routerLinkActive="active">
-          <i class="fa fa-dumbbell"></i> Gestion des Coaches
-        </a>
-      </li>
-    </ul>
-  </div>
+    <nav class="mt-10">
+      <ul>
+        <li class="mb-2">
+          <a (click)="setActive('users')" [routerLink]="['/admin/users']" routerLinkActive="text-blue-500" class="flex items-center p-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg">
+            <i class="fa fa-users mr-2"></i> Gestion des Utilisateurs
+          </a>
+        </li>
+        <li class="mb-2">
+          <a (click)="setActive('coaches')" [routerLink]="['/admin/coaches']" routerLinkActive="text-blue-500" class="flex items-center p-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg">
+            <i class="fa fa-dumbbell mr-2"></i> Gestion des Coaches
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
 
   <!-- Main Content -->
-  <div class="content">
-    <div class="stats-container">
-      <div class="stat-card">
-        <h3>{{ totalUsers }}</h3>
-        <p>Total Utilisateurs</p>
+  <div class="flex-1 bg-gray-100 p-6">
+    <div class="grid grid-cols-2 gap-4">
+      <!-- Users Stats -->
+      <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+        <h3 class="text-2xl font-bold">{{ totalUsers }}</h3>
+        <p class="text-gray-600">Total Utilisateurs</p>
       </div>
-      <div class="stat-card">
-        <h3>{{ totalCoaches }}</h3>
-        <p>Total Coaches</p>
+
+      <!-- Coaches Stats -->
+      <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+        <h3 class="text-2xl font-bold">{{ totalCoaches }}</h3>
+        <p class="text-gray-600">Total Coaches</p>
       </div>
     </div>
+
     <router-outlet></router-outlet>
   </div>
 </div>

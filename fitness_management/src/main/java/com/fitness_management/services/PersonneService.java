@@ -8,6 +8,7 @@ import com.fitness_management.security.JwtAuth;
 import com.fitness_management.util.FileUploadUtil;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,8 @@ public class PersonneService  {
 
     @Autowired
     private CloudinaryService cloudinaryService;
+
+    @Getter
 
     @Autowired
     private PersonneMapper personneMapper;
@@ -135,14 +138,7 @@ public class PersonneService  {
                 existingPersonne.setMotDePasse(passwordEncoder.encode(updatedPersonne.getMotDePasse()));
             }
 
-            // Specific updates for subclasses (User, Admin, Coach)
-            if (existingPersonne instanceof User && updatedPersonne instanceof User) {
-                ((User) existingPersonne).setNiveauFitness(((User) updatedPersonne).getNiveauFitness());
-            } else if (existingPersonne instanceof Admin && updatedPersonne instanceof Admin) {
-                // Admin-specific updates can be added here
-            } else if (existingPersonne instanceof Coach && updatedPersonne instanceof Coach) {
-                ((Coach) existingPersonne).setCertification(((Coach) updatedPersonne).getCertification());
-            }
+
 
             return personneRepository.save(existingPersonne);
         }
@@ -163,7 +159,5 @@ public class PersonneService  {
     public List<Personne> getCoaches() {
         return personneRepository.findAllByRole(Role.ROLE_COACH);
     }
-
-
 
 }

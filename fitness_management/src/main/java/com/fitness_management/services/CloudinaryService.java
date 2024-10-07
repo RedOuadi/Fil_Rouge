@@ -71,6 +71,7 @@ public class CloudinaryService  {
 
 
 
+
     public void deleteFile(String publicId, String resourceType) {
         try {
             Map<String, String> params = new HashMap<>();

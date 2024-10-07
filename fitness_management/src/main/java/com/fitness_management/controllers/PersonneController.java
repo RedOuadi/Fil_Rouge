@@ -156,7 +156,12 @@ public class PersonneController {
     @GetMapping
     public ResponseEntity<List<Personne>> getAllPersonnes() {
         List<Personne> personnes = personneService.findAll();
+        
         return new ResponseEntity<>(personnes, HttpStatus.OK);
+    }
+    @GetMapping("/hello")
+    public String test (){
+        return "hello world";
     }
 
     // Get a Personne by ID

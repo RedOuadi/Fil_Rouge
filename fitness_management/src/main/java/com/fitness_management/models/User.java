@@ -17,7 +17,7 @@ import java.util.List;
 @Table(name = "Utilisateur")
 public class User extends Personne {
 
-    private String niveauFitness;
+
 
 
 

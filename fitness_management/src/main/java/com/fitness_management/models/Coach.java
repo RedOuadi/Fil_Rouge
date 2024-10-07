@@ -14,7 +14,7 @@ import java.util.List;
 @Table(name = "Coach")
 public class Coach extends Personne {
 
-    private String certification;
+
 
 
 

@@ -36,8 +36,8 @@ export class LoginComponent {
           // Redirect based on role
           if (response.role === 'ROLE_ADMIN') {
             this.router.navigate(['/Dashbord-admin']);
-          } else if (response.role === 'ROLE_TECHNICIEN') {
-            this.router.navigate(['/dashboard-technicien']); // Adjust the route as needed
+          } else if (response.role === 'ROLE_COACH') {
+            this.router.navigate(['/dashboard-coach']); // Adjust the route as needed
           } else {
             this.router.navigate(['/dashboard-user']); // Adjust the route as needed
           }

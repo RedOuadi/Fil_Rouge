@@ -1,0 +1,25 @@
+/* Custom CSS for Dashboard Admin */
+.sidebar {
+  /* If you want to modify the sidebar width or other properties */
+  width: 16rem; /* 64 units or 256px as per Tailwind’s sizing */
+}
+
+.nav-links a {
+  transition: background-color 0.3s ease;
+}
+
+.nav-links a:hover {
+  background-color: rgba(255, 255, 255, 0.1); /* Light hover effect */
+}
+
+.active-section {
+  background-color: #1e293b; /* Darker background for the active section */
+}
+
+.stat-card {
+  transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: scale(1.05); /* Slight hover effect for stat cards */
+}

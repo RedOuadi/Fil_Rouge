@@ -1,7 +1,8 @@
+// src/app/services/personne.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import {Personne} from "../models/personne.model";
+import { Personne } from '../models/personne.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,14 +12,17 @@ export class PersonneService {
 
   constructor(private http: HttpClient) {}
 
+  // Get total number of users
   getTotalUsers(): Observable<number> {
     return this.http.get<number>(`${this.apiUrl}/count-users`);
   }
 
+  // Get total number of coaches
   getTotalCoaches(): Observable<number> {
     return this.http.get<number>(`${this.apiUrl}/count-coaches`);
   }
 
+  // Fetch the list of users
   getUsers(): Observable<Personne[]> {
     return this.http.get<Personne[]>(`${this.apiUrl}/users`);
   }
@@ -27,16 +31,18 @@ export class PersonneService {
   getCoaches(): Observable<Personne[]> {
     return this.http.get<Personne[]>(`${this.apiUrl}/coaches`);
   }
-  register(user: Personne): Observable<any> {
-    return this.http.post(`${this.apiUrl}/register`, user);
+
+  // Register a new user
+  register(formData: FormData): Observable<Personne> {
+    return this.http.post<Personne>(`${this.apiUrl}/register`, formData);
   }
 
-  // Connexion de l'utilisateur
-  login(credentials: { email: string, motDePasse: string }): Observable<any> {
+  // User login
+  login(credentials: { email: string; motDePasse: string }): Observable<any> {
     return this.http.post(`${this.apiUrl}/login`, credentials);
   }
 
-  // Gestion des jetons (JWT)
+  // JWT token management
   setToken(token: string): void {
     localStorage.setItem('authToken', token);
   }
@@ -45,18 +51,14 @@ export class PersonneService {
     return localStorage.getItem('authToken');
   }
 
-  // Redirection après connexion
-
-
-  // Sauvegarder l'utilisateur courant
+  // Save the current user in local storage
   setCurrentUser(user: any): void {
     localStorage.setItem('currentUser', JSON.stringify(user));
   }
 
-  // Récupérer le rôle actuel
+  // Retrieve the role of the current user
   getCurrentUserRole(): string | null {
     const user = localStorage.getItem('currentUser');
     return user ? JSON.parse(user).role : null;
   }
 }
-

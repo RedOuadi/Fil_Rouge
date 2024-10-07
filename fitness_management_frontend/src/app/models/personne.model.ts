@@ -1,6 +1,14 @@
 export interface Personne {
   id: number;
   nom: string;
+  prenom: string;
   email: string;
-  role: string;  // e.g. "coach" or "utilisateur"
+  genre: string;
+  role: string;
+  motDePasse :string;
+  profileImage?: {
+    id: number;
+    imageUrl: string;
+    cloudinaryImageId: string;
+  };
 }

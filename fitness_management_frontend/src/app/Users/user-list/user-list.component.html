@@ -1,0 +1,19 @@
+<div class="container">
+  <h2>User List</h2>
+  <div class="user-list">
+    <div *ngFor="let user of users" class="user-card">
+      <img [src]="getProfileImageUrl(user)" alt="{{ user.nom }}'s profile" class="profile-image">
+      <div class="user-info">
+        <h3>{{ user.nom }} {{ user.prenom }}</h3>
+        <p>Email: {{ user.email }}</p>
+        <p>Genre: {{ user.genre }}</p>
+        <p>Role: {{ user.role }}</p>
+      </div>
+      <div class="user-actions">
+        <button (click)="deleteUser(user.id)" class="btn btn-danger">Delete</button>
+        <a [routerLink]="['/users', user.id, 'edit']" class="btn btn-primary">Edit</a>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+</div>

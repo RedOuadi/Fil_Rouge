@@ -2,25 +2,26 @@
   <!-- Sidebar -->
   <aside class="w-64 bg-gray-800 text-white">
     <div class="p-6">
-      <h2 class="text-2xl font-bold">Dashboard User</h2>
+      <h2 class="text-2xl font-bold">Dashboard Coach</h2>
     </div>
     <nav class="mt-10">
       <ul>
         <li class="mb-2">
-          <a (click)="setActive('users')" [routerLink]="['/admin/user-list']" routerLinkActive="text-blue-500" class="flex items-center p-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg">
-            <i class="fa fa-users mr-2"></i> Gestion des Utilisateurs
-          </a>
-        </li>
-        <li class="mb-2">
-          <a (click)="setActive('coaches')" [routerLink]="['/admin/coach-list']" routerLinkActive="text-blue-500" class="flex items-center p-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg">
-            <i class="fa fa-dumbbell mr-2"></i> Gestion des Coaches
+          <a
+            (click)="setActive('programmes')"
+            [routerLink]="['/coach/programme-list']"
+            routerLinkActive="text-blue-500"
+            class="flex items-center p-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg"
+          >
+            <i class="fa fa-dumbbell mr-2"></i> Gestion des Programmes
           </a>
         </li>
       </ul>
     </nav>
   </aside>
 
-
-
-  <router-outlet></router-outlet>
+  <!-- Main content -->
+  <div class="flex-1 overflow-auto">
+    <router-outlet></router-outlet>
+  </div>
 </div>

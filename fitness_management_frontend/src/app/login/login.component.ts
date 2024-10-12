@@ -25,7 +25,6 @@ export class LoginComponent {
 
       this.personneService.login(loginData).subscribe(
         (response: any) => {
-          // Set the token and user information in the service or local storage
           this.personneService.setToken(response.token);
           this.personneService.setCurrentUser({
             email: email,
@@ -33,13 +32,22 @@ export class LoginComponent {
             motDePasse: motDePasse,
           });
 
+          // Store the user ID and coach ID based on the response
+          localStorage.setItem('userId', response.userId || ''); // Store user ID if exists
+          localStorage.setItem('coachId', response.coachId || ''); // Store coach ID if exists
+
+          // Debugging: Log the role for checking
+          console.log('User role:', response.role);
+
           // Redirect based on role
           if (response.role === 'ROLE_ADMIN') {
-            this.router.navigate(['/Dashbord-admin']);
+            this.router.navigate(['/dashboard-admin']);
           } else if (response.role === 'ROLE_COACH') {
-            this.router.navigate(['/dashboard-coach']); // Adjust the route as needed
+            this.router.navigate(['/dashboard-coach']); // Coach role redirection
+          } else if (response.role === 'ROLE_USER') {
+            this.router.navigate(['/dashboard-user']); // User role redirection
           } else {
-            this.router.navigate(['/dashboard-user']); // Adjust the route as needed
+            console.error('Unknown role:', response.role);
           }
         },
         (error) => {

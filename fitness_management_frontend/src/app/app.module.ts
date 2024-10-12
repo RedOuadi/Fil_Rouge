@@ -4,8 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DashboardAdminComponent } from './dashboard-admin/dashboard-admin.component';
-import { UserManagementComponent } from './user-management/user-management.component';
-import { CoachManagementComponent } from './coach-management/coach-management.component';
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -21,13 +20,19 @@ import { CoachUpdateComponent } from './Coaches/coach-update/coach-update.compon
 import { HeaderComponent } from './header/header.component';
 import { DashboardUserComponent } from './dashboard-user/dashboard-user.component';
 import { DashboardCoachComponent } from './dashboard-coach/dashboard-coach.component';
+import { ProgrammeListComponent } from './Programmes/programme-list/programme-list.component';
+import {MatProgressBarModule} from "@angular/material/progress-bar";
+import {MatCardModule} from "@angular/material/card";
+import {MatChipsModule} from "@angular/material/chips";
+import {MatIconModule} from "@angular/material/icon";
+import {ExerciceListComponent} from "./Programmes/Exercices/exercice-list/exercice-list.component";
+import {MatButtonModule} from "@angular/material/button";
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardAdminComponent,
-    UserManagementComponent,
-    CoachManagementComponent,
+
     LoginComponent,
     RegisterComponent,
     UserListComponent,
@@ -38,7 +43,10 @@ import { DashboardCoachComponent } from './dashboard-coach/dashboard-coach.compo
     CoachUpdateComponent,
     HeaderComponent,
     DashboardUserComponent,
-    DashboardCoachComponent
+    DashboardCoachComponent,
+    ProgrammeListComponent,
+
+    ExerciceListComponent
   ],
   imports: [
     BrowserModule,
@@ -47,7 +55,14 @@ import { DashboardCoachComponent } from './dashboard-coach/dashboard-coach.compo
     FormsModule,
     HttpClientModule,
     NgbModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatProgressBarModule,
+    MatCardModule,
+    MatChipsModule,
+    MatIconModule,
+    MatButtonModule,
+
+
   ],
   providers: [],
   bootstrap: [AppComponent]

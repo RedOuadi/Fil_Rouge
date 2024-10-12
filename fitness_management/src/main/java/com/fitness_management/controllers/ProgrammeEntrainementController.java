@@ -1,53 +1,56 @@
 package com.fitness_management.controllers;
 
-import com.fitness_management.models.ProgrammeEntrainement;
+import com.fitness_management.dto.ProgrammeEntrainementDTO;
 import com.fitness_management.services.ProgrammeEntrainementService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/programmes")
+@RequiredArgsConstructor
 public class ProgrammeEntrainementController {
 
-    @Autowired
-    private ProgrammeEntrainementService programmeService;
+    private final ProgrammeEntrainementService programmeService;
 
     @GetMapping
-    public List<ProgrammeEntrainement> getAllProgrammes() {
-        return programmeService.findAll();
+    public ResponseEntity<List<ProgrammeEntrainementDTO>> getAllProgrammes() {
+        return ResponseEntity.ok(programmeService.getAllProgrammes());
     }
 
+
     @GetMapping("/{id}")
-    public ResponseEntity<ProgrammeEntrainement> getProgrammeById(@PathVariable Long id) {
-        Optional<ProgrammeEntrainement> programme = programmeService.findById(id);
-        if (programme.isPresent()) {
-            return ResponseEntity.ok(programme.get());
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<ProgrammeEntrainementDTO> getProgrammeById(@PathVariable Long id) {
+        ProgrammeEntrainementDTO programmeDTO = programmeService.getProgrammeById(id);
+        return new ResponseEntity<>(programmeDTO, HttpStatus.OK);
+    }
+
+    @GetMapping("/coach/{coachId}")
+    public List<ProgrammeEntrainementDTO> getProgrammesByCoachId(@PathVariable Long coachId) {
+        return programmeService.getProgrammesByCoachId(coachId);
     }
 
     @PostMapping
-    public ProgrammeEntrainement createProgramme(@RequestBody ProgrammeEntrainement programme) {
-        return programmeService.save(programme);
+    public ResponseEntity<ProgrammeEntrainementDTO> createProgramme(@RequestBody ProgrammeEntrainementDTO programmeDTO) {
+        return new ResponseEntity<>(programmeService.createProgramme(programmeDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProgrammeEntrainement> updateProgramme(@PathVariable Long id, @RequestBody ProgrammeEntrainement updatedProgramme) {
-        try {
-            ProgrammeEntrainement updated = programmeService.update(id, updatedProgramme);
-            return ResponseEntity.ok(updated);
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
+
+    public ResponseEntity<ProgrammeEntrainementDTO> updateProgramme(
+            @PathVariable Long id,
+            @RequestBody ProgrammeEntrainementDTO programmeDTO) {
+        return ResponseEntity.ok(programmeService.updateProgramme(id, programmeDTO));
     }
 
     @DeleteMapping("/{id}")
+
     public ResponseEntity<Void> deleteProgramme(@PathVariable Long id) {
-        programmeService.delete(id);
+        programmeService.deleteProgramme(id);
         return ResponseEntity.noContent().build();
     }
 }

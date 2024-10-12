@@ -3,6 +3,7 @@ package com.fitness_management.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fitness_management.dto.PersonneDTO;
+import com.fitness_management.models.Genre;
 import com.fitness_management.models.Personne;
 import com.fitness_management.models.Role;
 import com.fitness_management.security.JwtAuth;
@@ -70,6 +71,7 @@ public class PersonneController {
             ObjectMapper objectMapper = new ObjectMapper();
             personneDTO = objectMapper.readValue(personneJson, PersonneDTO.class);
             Role.valueOf(personneDTO.getRole());
+            Genre.valueOf(personneDTO.getGenre());
 
             // Log the parsed data
             logger.info("Personne details: Email: {}", personneDTO.getEmail());
@@ -111,6 +113,20 @@ public class PersonneController {
     }
 
 
+    @PostMapping("/create-admin")
+    public ResponseEntity<String> createAdminUser() {
+        logger.info("Received request to create admin user.");
+
+        try {
+            personneService.createAdminUserIfNotExist();
+            logger.info("Admin user created successfully.");
+            return ResponseEntity.ok("Admin user created successfully");
+        } catch (Exception e) {
+            logger.error("Error occurred while creating admin user: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while creating admin user.");
+        }
+    }
+
     // Login a Personne
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody Map<String, String> userRequest) {
@@ -126,13 +142,19 @@ public class PersonneController {
             Personne foundUser = optionalUser.get();
             String encodedPassword = foundUser.getMotDePasse();
 
+            // Check if the password matches
             if (passwordEncoder.matches(rawPassword, encodedPassword)) {
                 Role role = foundUser.getRole();
                 String token = jwtAuth.generateToken(foundUser.getEmail(), String.valueOf(role));
 
-                Map<String, String> response = new HashMap<>();
+                Map<String, Object> response = new HashMap<>();
                 response.put("token", token);
                 response.put("role", String.valueOf(role));
+                if (role.equals(Role.ROLE_COACH)) { // Adjust if you have a specific method to check for a coach
+                    response.put("coachId", foundUser.getId());
+                } else {
+                    response.put("userId", foundUser.getId()); // You may want to handle other roles differently
+                }
 
                 return ResponseEntity.ok(response);
             } else {
@@ -145,12 +167,6 @@ public class PersonneController {
 
 
 
-    // Create a new Personne
-//    @PostMapping
-//    public ResponseEntity<Personne> createPersonne(@RequestBody Personne personne) {
-//        Personne createdPersonne = personneService.registerPersonne(personne);
-//        return new ResponseEntity<>(createdPersonne, HttpStatus.CREATED);
-//    }
 
     // Get all Personnes
     @GetMapping
@@ -174,13 +190,51 @@ public class PersonneController {
 
 
     // Update a Personne by ID
-    @PutMapping("/{id}")
-    public ResponseEntity<Personne> updatePersonne(@PathVariable Long id, @RequestBody Personne personneDetails) {
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<PersonneDTO> updatePersonne(
+            @PathVariable Long id,
+            @RequestPart("personne") String personneJson,
+            @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) {
+
+        logger.info("Received PUT request to update personne with ID: {}", id);
+
         try {
-            Personne updatedPersonne = personneService.updatePersonne(id, personneDetails);
+            // Parse the JSON string into a PersonneDTO object
+            ObjectMapper objectMapper = new ObjectMapper();
+            PersonneDTO personneDTO = objectMapper.readValue(personneJson, PersonneDTO.class);
+            Genre.valueOf(personneDTO.getGenre());
+            // Log the parsed data
+            logger.info("Updating personne details: Email: {}", personneDTO.getEmail());
+
+            // Update the personne
+            PersonneDTO updatedPersonne = personneService.updatePersonne(id, personneDTO, profileImage);
+
+            // Log success
+            logger.info("Personne with ID: {} successfully updated.", id);
+
+            // Return successful response
             return new ResponseEntity<>(updatedPersonne, HttpStatus.OK);
+
+        } catch (JsonProcessingException e) {
+            // Handle JSON parsing errors
+            logger.error("Error parsing personne JSON: {}", e.getMessage(), e);
+            return ResponseEntity.badRequest().body(null);
+        } catch (MultipartException e) {
+            // Handle multipart/form-data specific exceptions
+            logger.error("Multipart error occurred while uploading profile image: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            // Handle case where personne is not found
+            logger.error("Personne not found with ID: {}", id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (ValidationException e) {
+            // Handle validation errors
+            logger.error("Validation error for personne update: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (Exception e) {
+            // Handle general exceptions
+            logger.error("An error occurred while updating personne: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 

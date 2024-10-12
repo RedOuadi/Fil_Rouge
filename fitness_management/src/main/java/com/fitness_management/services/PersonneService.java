@@ -1,5 +1,6 @@
 package com.fitness_management.services;
 
+
 import com.fitness_management.dto.PersonneDTO;
 import com.fitness_management.mapper.PersonneMapper;
 import com.fitness_management.models.*;
@@ -12,8 +13,11 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -66,6 +70,16 @@ public class PersonneService  {
         String extension = originalFileName != null ? originalFileName.substring(originalFileName.lastIndexOf('.') + 1) : "png";
 
         String fileName = FileUploadUtil.getFileName(baseName, extension);
+
+
+        if (personne instanceof User) {
+            ((User) personne).setRole(Role.ROLE_UTILISATEUR);
+        } else if (personne instanceof Admin) {
+            ((Admin) personne).setRole(Role.ROLE_ADMIN);
+        } else if (personne instanceof Coach) {
+            ((Coach) personne).setRole(Role.ROLE_COACH);
+        }
+
         if (profileImage != null && !profileImage.isEmpty()) {
             CloudinaryResponse response = cloudinaryService.uploadFile(profileImage,fileName, "image");
             Image image = new Image();
@@ -125,25 +139,66 @@ public class PersonneService  {
         return personneRepository.findById(id);
     }
 
-    public Personne updatePersonne(Long id, Personne updatedPersonne) {
-        Optional<Personne> optionalPersonne = findById(id);
-        if (optionalPersonne.isPresent()) {
-            Personne existingPersonne = optionalPersonne.get();
+    @Transactional
+    public PersonneDTO updatePersonne(Long id, PersonneDTO updatedPersonneDTO, MultipartFile profileImage) {
+        logger.info("Updating personne with ID: {}", id);
 
-            // Update fields
-            existingPersonne.setNom(updatedPersonne.getNom());
-            existingPersonne.setPrenom(updatedPersonne.getPrenom());
-            existingPersonne.setEmail(updatedPersonne.getEmail());
-            if (updatedPersonne.getMotDePasse() != null) {
-                existingPersonne.setMotDePasse(passwordEncoder.encode(updatedPersonne.getMotDePasse()));
-            }
+        Personne existingPersonne = personneRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Personne not found with id: " + id));
 
-
-
-            return personneRepository.save(existingPersonne);
+        // Update fields
+        if (updatedPersonneDTO.getNom() != null) {
+            existingPersonne.setNom(updatedPersonneDTO.getNom());
         }
-        throw new EntityNotFoundException("Personne not found with id: " + id);
+        if (updatedPersonneDTO.getPrenom() != null) {
+            existingPersonne.setPrenom(updatedPersonneDTO.getPrenom());
+        }
+        if (updatedPersonneDTO.getEmail() != null) {
+            existingPersonne.setEmail(updatedPersonneDTO.getEmail());
+        }
+        if (updatedPersonneDTO.getUsername() != null) {
+            existingPersonne.setUsername(updatedPersonneDTO.getUsername());
+        }
+        if (updatedPersonneDTO.getGenre() != null) {
+            existingPersonne.setGenre(Genre.valueOf(updatedPersonneDTO.getGenre()));
+        }
+
+        // Handle password update if provided
+        if (updatedPersonneDTO.getMotDePasse() != null && !updatedPersonneDTO.getMotDePasse().isEmpty()) {
+            existingPersonne.setMotDePasse(passwordEncoder.encode(updatedPersonneDTO.getMotDePasse()));
+        }
+
+        // Handle profile image update if provided
+        if (profileImage != null && !profileImage.isEmpty()) {
+            FileUploadUtil.assertAllowed(profileImage, FileUploadUtil.IMAGE_PATTERN);
+
+            // Delete existing image if present
+
+
+            String originalFileName = profileImage.getOriginalFilename();
+            String baseName = originalFileName != null ?
+                    originalFileName.substring(0, originalFileName.lastIndexOf('.')) : "profile";
+            String extension = originalFileName != null ?
+                    originalFileName.substring(originalFileName.lastIndexOf('.') + 1) : "png";
+
+            String fileName = FileUploadUtil.getFileName(baseName, extension);
+
+            CloudinaryResponse response = cloudinaryService.uploadFile(profileImage, fileName, "image");
+
+            Image image = existingPersonne.getProfileImage() != null ?
+                    existingPersonne.getProfileImage() : new Image();
+            image.setImageUrl(response.getUrl());
+            image.setCloudinaryImageId(response.getPublicId());
+            existingPersonne.setProfileImage(image);
+        }
+
+        Personne savedPersonne = personneRepository.save(existingPersonne);
+        logger.info("Successfully updated personne with ID: {}", id);
+
+        return personneMapper.toDTO(savedPersonne);
+
     }
+
     public long countUsers() {
         return personneRepository.countByRole(Role.ROLE_UTILISATEUR);
     }

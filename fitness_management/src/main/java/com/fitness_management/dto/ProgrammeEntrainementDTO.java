@@ -1,12 +1,17 @@
 package com.fitness_management.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Data;
 
-@Getter
-@Setter
+import java.util.List;
+
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+@Data
 public class ProgrammeEntrainementDTO {
     private Long id;
     private String nom;
     private String description;
+    private Long coachId;
+    private List<ExerciceDTO> exercices;
 }

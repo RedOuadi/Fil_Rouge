@@ -27,5 +27,12 @@ public class PersonneDTO {
     public void setRole(String role) {
         this.role = role.toUpperCase().startsWith("ROLE_") ? role : "ROLE_" + role.toUpperCase();
     }
+    public void setGenre(String genre) {
+        if (genre == null || genre.equalsIgnoreCase("null")) {
+            this.genre = null;  // Set to actual null instead of "NULL" string
+        } else {
+            this.genre = genre.toUpperCase();
+        }
+    }
 }
 

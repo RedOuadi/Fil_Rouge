@@ -1,3 +1,4 @@
+import {Image} from "./image.model";
 export interface Personne {
   id: number;
   nom: string;
@@ -6,9 +7,7 @@ export interface Personne {
   genre: string;
   role: string;
   motDePasse :string;
-  profileImage?: {
-    id: number;
-    imageUrl: string;
-    cloudinaryImageId: string;
-  };
+  profileImage?: Image;
+
 }
+

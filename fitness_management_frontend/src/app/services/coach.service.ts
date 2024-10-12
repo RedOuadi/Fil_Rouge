@@ -8,12 +8,12 @@ import { Personne } from '../models/personne.model';
   providedIn: 'root'
 })
 export class CoachService {
-  private apiUrl = 'http://localhost:8084/api/personnes/coaches';
+  private apiUrl = 'http://localhost:8084/api/coaches';
 
   constructor(private http: HttpClient) {}
 
   getCoaches(): Observable<Personne[]> {
-    return this.http.get<Personne[]>(`${this.apiUrl}`).pipe(
+    return this.http.get<Personne[]>(this.apiUrl).pipe(
       catchError(this.handleError)
     );
   }
@@ -24,8 +24,14 @@ export class CoachService {
     );
   }
 
-  registerCoach(coachData: FormData): Observable<Personne> {
-    return this.http.post<Personne>(`${this.apiUrl}/register`, coachData).pipe(
+  registerCoach(coachData: FormData, profileImage?: File): Observable<Personne> {
+    const formData: FormData = new FormData();
+    formData.append('personne', new Blob([JSON.stringify(coachData)], { type: 'application/json' }));
+    if (profileImage) {
+      formData.append('profileImage', profileImage);
+    }
+
+    return this.http.post<Personne>(this.apiUrl, formData).pipe(
       catchError(this.handleError)
     );
   }

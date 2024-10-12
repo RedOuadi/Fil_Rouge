@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { Personne } from '../models/personne.model';
 
 @Injectable({
@@ -24,10 +24,11 @@ export class UserService {
     );
   }
 
-
-  registerUser(user: Personne): Observable<any> {
-    console.log('Sending user data:', user);  // Log the user data being sent
-    return this.http.post<any>(`${this.apiUrl}/`, user);
+  registerUser(formData: FormData): Observable<any> {
+    return this.http.post(`${this.apiUrl}`, formData)
+      .pipe(
+        catchError(this.handleError)
+      );
   }
   updateUser(id: number, userData: FormData): Observable<Personne> {
     return this.http.put<Personne>(`${this.apiUrl}/${id}`, userData).pipe(

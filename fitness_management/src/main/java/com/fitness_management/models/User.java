@@ -17,7 +17,11 @@ import java.util.List;
 @Table(name = "Utilisateur")
 public class User extends Personne {
 
+    @OneToMany(mappedBy = "utilisateur")
+    private List<Activite> activites;
 
+    @OneToMany(mappedBy = "utilisateur")
+    private List<ObjectifFitness> objectifs;
 
 
 

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {Personne} from "../../models/personne.model";
-import {UserService} from "../../services/user.service";
+import { Personne } from '../../models/personne.model';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-user-list',
@@ -10,6 +10,7 @@ import {UserService} from "../../services/user.service";
 export class UserListComponent implements OnInit {
   users: Personne[] = [];
   errorMessage: string = '';
+  searchTerm: string = '';
 
   constructor(private userService: UserService) {}
 
@@ -45,5 +46,14 @@ export class UserListComponent implements OnInit {
 
   getProfileImageUrl(user: Personne): string {
     return user.profileImage?.imageUrl || 'assets/default-profile.png';
+  }
+
+  // Méthode pour filtrer les utilisateurs en fonction du terme de recherche
+  filteredUsers(): Personne[] {
+    return this.users.filter(user =>
+      user.nom.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+      user.prenom.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
   }
 }

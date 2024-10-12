@@ -1,29 +1,55 @@
 <div class="container">
   <h2>Create New User</h2>
   <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+
     <div class="form-group">
       <label for="nom">Nom</label>
-      <input type="text" id="nom" formControlName="nom" class="form-control">
+      <input type="text" id="nom" formControlName="nom" class="form-control" />
+      <div *ngIf="userForm.controls['nom'].invalid && userForm.controls['nom'].touched" class="text-danger">
+        <small *ngIf="userForm.controls['nom'].hasError('required')">Nom is required.</small>
+        <small *ngIf="userForm.controls['nom'].hasError('minlength')">Nom must be at least 2 characters long.</small>
+      </div>
     </div>
+
     <div class="form-group">
       <label for="prenom">Prénom</label>
-      <input type="text" id="prenom" formControlName="prenom" class="form-control">
+      <input type="text" id="prenom" formControlName="prenom" class="form-control" />
+      <div *ngIf="userForm.controls['prenom'].invalid && userForm.controls['prenom'].touched" class="text-danger">
+        <small *ngIf="userForm.controls['prenom'].hasError('required')">Prénom is required.</small>
+        <small *ngIf="userForm.controls['prenom'].hasError('minlength')">Prénom must be at least 2 characters long.</small>
+      </div>
     </div>
+
     <div class="form-group">
       <label for="email">Email</label>
-      <input type="email" id="email" formControlName="email" class="form-control">
+      <input type="email" id="email" formControlName="email" class="form-control" />
+      <div *ngIf="userForm.controls['email'].invalid && userForm.controls['email'].touched" class="text-danger">
+        <small *ngIf="userForm.controls['email'].hasError('required')">Email is required.</small>
+        <small *ngIf="userForm.controls['email'].hasError('email')">Please enter a valid email address.</small>
+      </div>
     </div>
+
     <div class="form-group">
       <label for="password">Password</label>
-      <input type="password" id="password" formControlName="password" class="form-control">
+      <input type="password" id="password" formControlName="password" class="form-control" />
+      <div *ngIf="userForm.controls['password'].invalid && userForm.controls['password'].touched" class="text-danger">
+        <small *ngIf="userForm.controls['password'].hasError('required')">Password is required.</small>
+        <small *ngIf="userForm.controls['password'].hasError('minlength')">Password must be at least 6 characters long.</small>
+      </div>
     </div>
+
     <div class="form-group">
-      <label for="genre">Genre</label>
+      <label for="genre">Genre *</label>
       <select id="genre" formControlName="genre" class="form-control">
+        <option value="">Select Genre</option>
         <option value="HOMME">Homme</option>
         <option value="FEMME">Femme</option>
       </select>
+      <div *ngIf="userForm.get('genre')?.invalid && userForm.get('genre')?.touched" class="text-danger">
+        <small>Genre is required.</small>
+      </div>
     </div>
+
     <div class="form-group">
       <label for="role">Role</label>
       <select id="role" formControlName="role" class="form-control">
@@ -31,43 +57,38 @@
         <option value="ROLE_COACH">Coach</option>
       </select>
     </div>
+
     <div class="form-group">
       <label for="profileImage">Profile Image (optional)</label>
-      <div class="file-input-wrapper">
-        <input id="profileImage" type="file" accept="image/*" (change)="onFileChange($event, 'profile')">
-        <span class="file-input-button">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-upload">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="17 8 12 3 7 8"></polyline>
-            <line x1="12" y1="3" x2="12" y2="15"></line>
-          </svg>
-          Choose Profile Image
-        </span>
-      </div>
+      <input
+        id="profileImage"
+        type="file"
+        accept="image/*"
+        (change)="onFileChange($event)"
+        class="form-control-file"
+      />
     </div>
-    <div class="form-group">
-      <label for="coverImage">Cover Image (optional)</label>
-      <div class="file-input-wrapper">
-        <input id="coverImage" type="file" accept="image/*" (change)="onFileChange($event, 'cover')">
-        <span class="file-input-button">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-upload">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="17 8 12 3 7 8"></polyline>
-            <line x1="12" y1="3" x2="12" y2="15"></line>
-          </svg>
-          Choose Cover Image
-        </span>
-      </div>
-    </div>
-    <button type="submit" [disabled]="userForm.invalid"  class="btn btn-primary">Create User</button>
+
+    <button type="submit" [disabled]="userForm.invalid" class="btn btn-primary">
+      Create User
+    </button>
   </form>
-  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+  <!-- Error message display -->
+  <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Form validation errors display -->
+  <div *ngIf="userForm.invalid && userForm.touched" class="alert alert-warning mt-3">
+    <p>Form is invalid. Please correct the errors below:</p>
+    <ul>
+      <li *ngFor="let key of Object.keys(userForm.controls)">
+        <div *ngIf="userForm.controls[key].invalid && userForm.controls[key].touched">
+          {{ key }}: {{ userForm.controls[key].errors | json }}
+        </div>
+      </li>
+    </ul>
+  </div>
 </div>
-<div *ngIf="userForm.invalid">
-  <p>Form is invalid. Errors:</p>
-  <ul>
-    <li *ngFor="let control of userForm.controls | keyvalue">
-      {{ control.key }}: {{ control.value.errors | json }}
-    </li>
-  </ul>
-</div>
+

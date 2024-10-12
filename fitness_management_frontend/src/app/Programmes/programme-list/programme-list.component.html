@@ -1,0 +1,36 @@
+<div class="programme-container">
+  <h1 class="mat-headline-4">Programmes d'entraînement</h1>
+
+  <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+
+  <div class="programme-grid" *ngIf="!isLoading">
+    <mat-card *ngFor="let programme of programmes" class="programme-card" @cardAnimation>
+      <mat-card-header>
+        <mat-card-title>{{ programme.nom }}</mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <p>{{ programme.description }}</p>
+        <mat-chip-set>
+          <mat-chip color="accent" highlighted>
+            {{ programme.exercices?.length || 0 }} exercices
+          </mat-chip>
+        </mat-chip-set>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button mat-raised-button color="primary" (click)="viewExercises(programme.id)">
+          <mat-icon>fitness_center</mat-icon>
+          Voir les exercices
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <mat-card *ngIf="!isLoading && programmes.length === 0" class="empty-state-card">
+    <mat-card-content>
+      <mat-icon class="empty-icon">fitness_center</mat-icon>
+      <p>Aucun programme d'entraînement disponible pour le moment.</p>
+    </mat-card-content>
+  </mat-card>
+</div>

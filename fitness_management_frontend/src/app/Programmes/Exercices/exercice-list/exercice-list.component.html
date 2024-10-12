@@ -1,0 +1,49 @@
+<div class="exercice-container">
+  <h1 class="mat-headline-4">Exercices du Programme</h1>
+
+  <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+
+  <div *ngIf="error" class="error-message">
+    <mat-card>
+      <mat-card-content>
+        <mat-icon color="warn">error</mat-icon>
+        <p>{{ error }}</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="exercice-grid" *ngIf="!isLoading && !error && exercices.length > 0">
+    <mat-card *ngFor="let exercice of exercices" class="exercice-card">
+      <mat-card-header>
+        <mat-card-title>{{ exercice.nom }}</mat-card-title>
+      </mat-card-header>
+
+      <img *ngIf="exercice.exerciceImage"
+           [src]="exercice.exerciceImage.imageUrl"
+           alt="{{ exercice.nom }}"
+           mat-card-image>
+
+      <mat-card-content>
+        <p>{{ exercice.description }}</p>
+        <mat-chip-set>
+          <mat-chip color="primary">{{ exercice.niveau }}</mat-chip>
+          <mat-chip>{{ exercice.duree }} minutes</mat-chip>
+          <mat-chip>{{ exercice.caloriesBrulees }} calories</mat-chip>
+        </mat-chip-set>
+      </mat-card-content>
+
+      <mat-card-actions *ngIf="exercice.exerciceVideo">
+        <a [href]="exercice.exerciceVideo.videoUrl" target="_blank" mat-button color="primary">
+          <mat-icon>play_circle</mat-icon> Voir la vidéo
+        </a>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <mat-card *ngIf="!isLoading && !error && exercices.length === 0" class="empty-state-card">
+    <mat-card-content>
+      <mat-icon class="empty-icon">fitness_center</mat-icon>
+      <p>Aucun exercice trouvé pour ce programme.</p>
+    </mat-card-content>
+  </mat-card>
+</div>

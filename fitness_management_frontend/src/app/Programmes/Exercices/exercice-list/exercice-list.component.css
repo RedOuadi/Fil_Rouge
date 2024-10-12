@@ -1,0 +1,73 @@
+.exercice-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header-card {
+  margin-bottom: 20px;
+}
+
+.exercice-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.exercice-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.exercice-image {
+  object-fit: cover;
+  height: 200px;
+}
+
+.exercice-video {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.exercice-details {
+  margin-top: 16px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.detail-item mat-icon {
+  margin-right: 8px;
+}
+
+.empty-state-card {
+  text-align: center;
+  padding: 40px;
+}
+
+.empty-icon {
+  font-size: 48px;
+  height: 48px;
+  width: 48px;
+  margin-bottom: 16px;
+}
+
+mat-card-actions {
+  display: flex;
+  justify-content: space-around;
+  padding: 8px;
+}
+
+@media (max-width: 600px) {
+  .exercice-container {
+    padding: 10px;
+  }
+
+  .exercice-grid {
+    grid-template-columns: 1fr;
+  }
+}

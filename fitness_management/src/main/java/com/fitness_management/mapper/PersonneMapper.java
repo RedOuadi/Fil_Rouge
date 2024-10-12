@@ -19,7 +19,13 @@ public class PersonneMapper {
         dto.setPrenom(personne.getPrenom());  // Adjusted to match the DTO
         dto.setEmail(personne.getEmail());
         dto.setUsername(personne.getUsername());
-        dto.setRole(personne.getRole().name());  // Assuming Role is an Enum
+        dto.setRole(personne.getRole().name());
+        if (dto.getGenre() != null) {
+            personne.setGenre(Genre.valueOf(dto.getGenre().toUpperCase()));
+        } else {
+            personne.setGenre(null);
+        }
+
 
         if (personne.getProfileImage() != null) {
             dto.setProfileImage(toImageDto(personne.getProfileImage()));
@@ -56,6 +62,7 @@ public class PersonneMapper {
         personne.setUsername(dto.getUsername());
         personne.setMotDePasse(dto.getMotDePasse());
         personne.setRole(Role.valueOf(dto.getRole().toUpperCase()));
+        personne.setGenre(Genre.valueOf(dto.getGenre().toUpperCase()));
 
         if (dto.getProfileImage() != null) {
             personne.setProfileImage(toImageEntity(dto.getProfileImage()));

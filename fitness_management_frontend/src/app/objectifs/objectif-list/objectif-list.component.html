@@ -1,1 +1,31 @@
-<p>objectif-list works!</p>
+<div class="objectif-container">
+  <h1>Liste des Objectifs de Fitness</h1>
+
+  <button mat-raised-button color="primary" (click)="redirectToCreateObjectif()">
+    <mat-icon>add</mat-icon> Ajouter un objectif
+  </button>
+
+  <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+
+  <mat-card *ngFor="let objectif of objectifs" class="objectif-card" (click)="redirectToUpdateObjectif(objectif.id)">
+    <mat-card-title>{{ objectif.type }}</mat-card-title>
+    <mat-card-content>
+      <p>{{ objectif.description }}</p>
+      <p>Début: {{ objectif.dateDebut | date }}</p>
+      <p>Fin: {{ objectif.dateFin | date }}</p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="warn" (click)="deleteObjectif(objectif.id); $event.stopPropagation()">
+        <mat-icon>delete</mat-icon> Supprimer
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+
+  <mat-card *ngIf="!isLoading && objectifs.length === 0" class="empty-state-card">
+    <mat-card-content>
+      <mat-icon class="empty-icon">fitness_center</mat-icon>
+      <p>Aucun objectif disponible pour le moment.</p>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -22,6 +22,12 @@ public class ObjectifFitnessController {
         return new ResponseEntity<>(createdObjectif, HttpStatus.CREATED);
     }
 
+    @GetMapping("/utilisateur/{utilisateurId}")
+    public ResponseEntity<List<ObjectifFitnessDTO>> getObjectifsByUtilisateurId(@PathVariable Long utilisateurId) {
+        List<ObjectifFitnessDTO> objectifs = objectifFitnessService.getObjectifsByUtilisateurId(utilisateurId);
+        return new ResponseEntity<>(objectifs, HttpStatus.OK);
+    }
+
     @GetMapping
     public ResponseEntity<List<ObjectifFitnessDTO>> getAllObjectifs() {
         List<ObjectifFitnessDTO> objectifs = objectifFitnessService.getAllObjectifs();

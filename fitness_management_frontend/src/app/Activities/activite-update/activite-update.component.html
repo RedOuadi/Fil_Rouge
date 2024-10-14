@@ -1,1 +1,54 @@
-<p>activite-update works!</p>
+<div class="container">
+  <h2>Update Activity</h2>
+
+  <form [formGroup]="activiteForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="date">Date</label>
+      <input type="date" id="date" formControlName="date" class="form-control" required />
+      <div *ngIf="activiteForm.get('date')?.invalid && (activiteForm.get('date')?.touched || activiteForm.get('date')?.dirty)" class="text-danger">
+        <small>Date is required.</small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="pas">Steps</label>
+      <input type="number" id="pas" formControlName="pas" class="form-control" required />
+      <div *ngIf="activiteForm.get('pas')?.invalid && (activiteForm.get('pas')?.touched || activiteForm.get('pas')?.dirty)" class="text-danger">
+        <small>Steps must be a positive number.</small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="distance">Distance (in km)</label>
+      <input type="number" id="distance" formControlName="distance" class="form-control" required />
+      <div *ngIf="activiteForm.get('distance')?.invalid && (activiteForm.get('distance')?.touched || activiteForm.get('distance')?.dirty)" class="text-danger">
+        <small>Distance must be a positive number.</small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="caloriesBrulees">Calories Burned</label>
+      <input type="number" id="caloriesBrulees" formControlName="caloriesBrulees" class="form-control" required />
+      <div *ngIf="activiteForm.get('caloriesBrulees')?.invalid && (activiteForm.get('caloriesBrulees')?.touched || activiteForm.get('caloriesBrulees')?.dirty)" class="text-danger">
+        <small>Calories burned is required.</small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="imageFile">Upload Image</label>
+      <input type="file" id="imageFile" (change)="onImageSelected($event)" class="form-control" accept="image/*" />
+    </div>
+
+    <div class="form-group">
+      <label for="videoFile">Upload Video</label>
+      <input type="file" id="videoFile" (change)="onVideoSelected($event)" class="form-control" accept="video/*" />
+    </div>
+
+    <button type="submit" class="btn btn-primary" [disabled]="isLoading || activiteForm.invalid">Update Activity</button>
+    <button type="button" class="btn btn-secondary" (click)="router.navigate(['/user/activite-list', activiteId])">Cancel</button>
+
+    <div *ngIf="isLoading" class="mt-3">
+      <p>Loading...</p>
+    </div>
+  </form>
+</div>

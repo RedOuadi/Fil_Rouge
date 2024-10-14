@@ -19,6 +19,12 @@ export class ActiviteService {
     return this.http.get<Activite>(`${this.apiUrl}/${id}`);
   }
 
+  getActivitesByUtilisateurId(utilisateurId: number): Observable<Activite[]> {
+    return this.http.get<Activite[]>(`${this.apiUrl}/utilisateur/${utilisateurId}`);
+  }
+
+
+
   createActivite(activite: Activite, imageFile?: File, videoFile?: File): Observable<Activite> {
     const formData = new FormData();
     formData.append('activite', JSON.stringify(activite));

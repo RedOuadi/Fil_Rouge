@@ -150,10 +150,12 @@ public class PersonneController {
                 Map<String, Object> response = new HashMap<>();
                 response.put("token", token);
                 response.put("role", String.valueOf(role));
-                if (role.equals(Role.ROLE_COACH)) { // Adjust if you have a specific method to check for a coach
+                if (role.equals(Role.ROLE_COACH)) { // For a coach
                     response.put("coachId", foundUser.getId());
+                } else if (role.equals(Role.ROLE_UTILISATEUR)) {
+                    response.put("userId", foundUser.getId());
                 } else {
-                    response.put("userId", foundUser.getId()); // You may want to handle other roles differently
+                    response.put("adminId", foundUser.getId());
                 }
 
                 return ResponseEntity.ok(response);

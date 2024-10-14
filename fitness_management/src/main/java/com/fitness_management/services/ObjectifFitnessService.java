@@ -60,4 +60,11 @@ public class ObjectifFitnessService {
         }
         objectifFitnessRepository.deleteById(id);
     }
+
+
+    public List<ObjectifFitnessDTO> getObjectifsByUtilisateurId(Long utilisateurId) {
+        return objectifFitnessRepository.findByUtilisateurId(utilisateurId).stream()
+                .map(objectifFitnessMapper::toDTO)
+                .collect(Collectors.toList());
+    }
 }

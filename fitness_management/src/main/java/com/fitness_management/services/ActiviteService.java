@@ -66,6 +66,12 @@ public class ActiviteService {
         return activiteRepository.findById(id).map(activiteMapper::toDTO);
     }
 
+    public List<ActiviteDTO> getActivitesByUtilisateurId(Long utilisateurId) {
+        List<Activite> activites = activiteRepository.findByUtilisateurId(utilisateurId);
+        return activites.stream().map(activiteMapper::toDTO).toList();
+    }
+
+
     @Transactional
     public ActiviteDTO updateActivite(Long id, ActiviteDTO activiteDTO, MultipartFile imageFile, MultipartFile videoFile) {
         Activite existingActivite = activiteRepository.findById(id)

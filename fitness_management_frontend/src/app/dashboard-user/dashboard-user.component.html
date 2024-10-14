@@ -7,21 +7,31 @@
     <nav class="mt-10">
       <ul>
         <li class="mb-2">
-          <a (click)="setActive('users')" [routerLink]="['/admin/user-list']" routerLinkActive="text-blue-500" class="flex items-center p-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg">
-            <i class="fa fa-users mr-2"></i> Gestion des Utilisateurs
+          <a
+            (click)="setActive('objectifs')"
+            [routerLink]="['/user/objectif-list']"
+            routerLinkActive="text-blue-500"
+            class="flex items-center p-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg"
+          >
+            <i class="fa fa-bullseye mr-2"></i> Gestion des Objectifs
           </a>
         </li>
         <li class="mb-2">
-          <a (click)="setActive('coaches')" [routerLink]="['/admin/coach-list']" routerLinkActive="text-blue-500" class="flex items-center p-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg">
-            <i class="fa fa-dumbbell mr-2"></i> Gestion des Coaches
+          <a
+            (click)="setActive('activites')"
+            [routerLink]="['/user/activite-list']"
+            routerLinkActive="text-blue-500"
+            class="flex items-center p-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg"
+          >
+            <i class="fa fa-running mr-2"></i> Gestion des Activités
           </a>
         </li>
       </ul>
     </nav>
   </aside>
 
-
-
+  <!-- Main content -->
+  <div class="flex-1 overflow-auto">
     <router-outlet></router-outlet>
   </div>
-
+</div>

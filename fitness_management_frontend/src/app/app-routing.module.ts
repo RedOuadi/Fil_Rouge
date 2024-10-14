@@ -16,6 +16,12 @@ import { ProgrammeCreateComponent } from "./Programmes/programme-create/programm
 import { ProgrammeUpdateComponent } from "./Programmes/programme-update/programme-update.component";  // Import ProgrammeUpdateComponent
 import { ExerciceCreateComponent } from './Programmes/exercices/exercice-create/exercice-create.component';
 import {ExerciceUpdateComponent} from "./Programmes/Exercices/exercice-update/exercice-update.component";
+import { ObjectifListComponent } from './objectifs/objectif-list/objectif-list.component';
+import {ObjectifCreateComponent} from "./objectifs/objectif-create/objectif-create.component";
+import {ObjectifUpdateComponent} from "./objectifs/objectif-update/objectif-update.component";
+import {ActiviteListComponent} from "./Activities/activite-list/activite-list.component";
+import {ActiviteCreateComponent} from "./Activities/activite-create/activite-create.component";
+import {ActiviteUpdateComponent} from "./Activities/activite-update/activite-update.component";
 
 const routes: Routes = [
   { path: '', component: LoginComponent  },
@@ -67,7 +73,15 @@ const routes: Routes = [
   {
     path: 'user',
     component: DashboardUserComponent,
-    children: []
+    children: [
+
+      { path: 'objectif-list', component: ObjectifListComponent },
+      { path: 'objectif-create', component: ObjectifCreateComponent },
+      { path: 'objectif-update/:id', component: ObjectifUpdateComponent },
+      { path: 'activite-list/:userId', component: ActiviteListComponent },
+      { path: 'activite-create/:userId', component: ActiviteCreateComponent },
+      { path: 'activite-update/:id', component: ActiviteUpdateComponent }
+    ]
   },
 
   { path: '**', redirectTo: '' }

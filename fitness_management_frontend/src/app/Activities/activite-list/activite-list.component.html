@@ -1,1 +1,52 @@
-<p>activite-list works!</p>
+<div class="activite-container">
+  <h1 class="mat-headline-4">Activités de l'Utilisateur</h1>
+
+  <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+
+  <div *ngIf="error" class="error-message">
+    <mat-card>
+      <mat-card-content>
+        <mat-icon color="warn">error</mat-icon>
+        <p>{{ error }}</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="actions">
+    <button mat-raised-button color="primary" (click)="createActivite()">
+      <mat-icon>add</mat-icon> Ajouter une activité
+    </button>
+  </div>
+
+  <div class="activite-grid" *ngIf="!isLoading && !error && activites.length > 0">
+    <mat-card *ngFor="let activite of activites" class="activite-card">
+      <mat-card-header>
+        <mat-card-title>{{ activite.date | date }}</mat-card-title>
+      </mat-card-header>
+
+      <img *ngIf="activite.activiteImage"
+           [src]="activite.activiteImage.imageUrl"
+           alt="Activité"
+           class="activite-image" />
+      <video *ngIf="activite.activiteVideo" controls>
+        <source [src]="activite.activiteVideo.videoUrl" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+
+      <mat-card-content>
+        <p><strong>Pas:</strong> {{ activite.pas }}</p>
+        <p><strong>Distance:</strong> {{ activite.distance }} km</p>
+        <p><strong>Calories Brûlées:</strong> {{ activite.caloriesBrulees }}</p>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button mat-button (click)="updateActivite(activite.id)">Modifier</button>
+        <button mat-button color="warn" (click)="deleteActivite(activite.id)">Supprimer</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <div *ngIf="!isLoading && activites.length === 0">
+    <p>Aucune activité trouvée.</p>
+  </div>
+</div>

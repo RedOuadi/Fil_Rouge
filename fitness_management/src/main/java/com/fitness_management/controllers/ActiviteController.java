@@ -61,6 +61,13 @@ public class ActiviteController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    @GetMapping("/utilisateur/{utilisateurId}")
+    public ResponseEntity<List<ActiviteDTO>> getActivitesByUtilisateurId(@PathVariable Long utilisateurId) {
+        List<ActiviteDTO> activites = activiteService.getActivitesByUtilisateurId(utilisateurId);
+        return new ResponseEntity<>(activites, HttpStatus.OK);
+    }
+
+
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ActiviteDTO> updateActivite(
             @PathVariable Long id,

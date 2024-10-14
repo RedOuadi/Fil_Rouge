@@ -41,6 +41,7 @@ import { ActiviteListComponent } from './Activities/activite-list/activite-list.
 import { ActiviteCreateComponent } from './Activities/activite-create/activite-create.component';
 import { ActiviteUpdateComponent } from './Activities/activite-update/activite-update.component';
 import { HomeComponent } from './home/home.component';
+import {MatDatepickerModule} from "@angular/material/datepicker";
 
 @NgModule({
   declarations: [
@@ -89,6 +90,7 @@ import { HomeComponent } from './home/home.component';
     MatFormFieldModule,
     MatSelectModule,
     MatOptionModule,
+    MatDatepickerModule,
 
 
   ],

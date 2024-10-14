@@ -16,6 +16,11 @@ export class ObjectifFitnessService {
     return this.http.get<ObjectifFitness[]>(this.apiUrl);
   }
 
+
+  getObjectifsByUtilisateurId(utilisateurId: number): Observable<ObjectifFitness[]> {
+    return this.http.get<ObjectifFitness[]>(`${this.apiUrl}/utilisateur/${utilisateurId}`);
+  }
+
   getObjectifById(id: number): Observable<ObjectifFitness> {
     return this.http.get<ObjectifFitness>(`${this.apiUrl}/${id}`);
   }

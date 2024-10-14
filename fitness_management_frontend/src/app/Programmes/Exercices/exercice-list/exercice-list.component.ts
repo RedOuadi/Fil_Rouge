@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, finalize } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { Exercice } from '../../../models/exercice.model';
@@ -18,7 +18,8 @@ export class ExerciceListComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private exerciceService: ExerciceService
+    private exerciceService: ExerciceService,
+    private router: Router // Add Router here
   ) {}
 
   ngOnInit(): void {
@@ -53,5 +54,31 @@ export class ExerciceListComponent implements OnInit {
       .subscribe(exercices => {
         this.exercices = exercices;
       });
+  }
+
+  // Method to navigate to the create exercice page
+  createExercice(): void {
+    if (this.programmeId) {
+      this.router.navigate(['/coach/exercice-create', this.programmeId]);
+    }
+  }
+
+  // Method to navigate to the update exercice page
+  updateExercice(id: number): void {
+    this.router.navigate(['/coach/exercice-update', id]);
+  }
+
+  // Method to delete an exercice
+  deleteExercice(id: number): void {
+    if (confirm('Are you sure you want to delete this exercise?')) {
+      this.exerciceService.deleteExercice(id).subscribe({
+        next: () => {
+          this.exercices = this.exercices.filter(exercice => exercice.id !== id);
+        },
+        error: (err) => {
+          console.error('Error deleting exercise:', err);
+        }
+      });
+    }
   }
 }

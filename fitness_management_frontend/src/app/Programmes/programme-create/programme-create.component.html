@@ -1,0 +1,17 @@
+<div class="container">
+  <h1>Créer un Programme d'entraînement</h1>
+
+  <form (ngSubmit)="createProgramme()">
+    <mat-form-field class="full-width">
+      <mat-label>Nom du programme</mat-label>
+      <input matInput [(ngModel)]="programme.nom" name="nom" required />
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>Description</mat-label>
+      <textarea matInput [(ngModel)]="programme.description" name="description"></textarea>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit">Créer</button>
+  </form>
+</div>

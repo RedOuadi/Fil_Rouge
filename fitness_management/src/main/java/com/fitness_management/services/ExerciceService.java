@@ -59,6 +59,7 @@ public class ExerciceService {
             // Définir les propriétés de la vidéo
             exercice.getExerciceVideo().setVideoUrl(videoResponse.getUrl());
             exercice.getExerciceVideo().setCloudinaryVideoId(videoResponse.getPublicId());
+
         }
 
         // Sauvegarder l'exercice

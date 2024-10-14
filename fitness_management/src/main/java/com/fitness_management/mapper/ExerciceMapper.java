@@ -30,9 +30,12 @@ public class ExerciceMapper {
             dto.setExerciceVideo(toVideoDto(exercice.getExerciceVideo()));
         }
 
-        if (exercice.getProgramme() != null) {
-            dto.setProgrammeId(exercice.getProgramme().getId());
+        if (dto.getProgrammeId() != null) {
+            ProgrammeEntrainement programme = new ProgrammeEntrainement();
+            programme.setId(dto.getProgrammeId());
+            exercice.setProgramme(programme);
         }
+
 
         return dto;
     }

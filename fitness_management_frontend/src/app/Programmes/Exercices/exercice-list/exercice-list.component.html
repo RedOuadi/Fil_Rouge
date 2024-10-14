@@ -12,6 +12,12 @@
     </mat-card>
   </div>
 
+  <div class="actions">
+    <button mat-raised-button color="primary" (click)="createExercice()">
+      <mat-icon>add</mat-icon> Ajouter un exercice
+    </button>
+  </div>
+
   <div class="exercice-grid" *ngIf="!isLoading && !error && exercices.length > 0">
     <mat-card *ngFor="let exercice of exercices" class="exercice-card">
       <mat-card-header>
@@ -32,10 +38,13 @@
         </mat-chip-set>
       </mat-card-content>
 
-      <mat-card-actions *ngIf="exercice.exerciceVideo">
-        <a [href]="exercice.exerciceVideo.videoUrl" target="_blank" mat-button color="primary">
-          <mat-icon>play_circle</mat-icon> Voir la vidéo
-        </a>
+      <mat-card-actions>
+        <button mat-button color="primary" (click)="updateExercice(exercice.id)">
+          <mat-icon>edit</mat-icon> Modifier
+        </button>
+        <button mat-button color="warn" (click)="deleteExercice(exercice.id)">
+          <mat-icon>delete</mat-icon> Supprimer
+        </button>
       </mat-card-actions>
     </mat-card>
   </div>

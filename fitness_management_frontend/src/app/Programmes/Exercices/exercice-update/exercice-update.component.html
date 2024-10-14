@@ -1,0 +1,60 @@
+<div class="exercice-container">
+  <h1 class="mat-headline-4">Modifier l'exercice</h1>
+
+  <form [formGroup]="exerciceForm" (ngSubmit)="onSubmit()">
+    <mat-form-field>
+      <mat-label>Nom</mat-label>
+      <input matInput formControlName="nom" required>
+      <mat-error *ngIf="exerciceForm.get('nom')?.hasError('required')">
+        Le nom est requis
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" required></textarea>
+      <mat-error *ngIf="exerciceForm.get('description')?.hasError('required')">
+        La description est requise
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Durée (minutes)</mat-label>
+      <input type="number" matInput formControlName="duree" required>
+      <mat-error *ngIf="exerciceForm.get('duree')?.hasError('required')">
+        La durée est requise
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Niveau</mat-label>
+      <input matInput formControlName="niveau" required>
+      <mat-error *ngIf="exerciceForm.get('niveau')?.hasError('required')">
+        Le niveau est requis
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Calories Brûlées</mat-label>
+      <input type="number" matInput formControlName="caloriesBrulees" required>
+      <mat-error *ngIf="exerciceForm.get('caloriesBrulees')?.hasError('required')">
+        Les calories brûlées sont requises
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>ID du Programme</mat-label>
+      <input type="number" matInput formControlName="programmeId" required>
+      <mat-error *ngIf="exerciceForm.get('programmeId')?.hasError('required')">
+        L'ID du programme est requis
+      </mat-error>
+    </mat-form-field>
+
+    <input type="file" (change)="onImageSelected($event)" accept="image/*">
+    <input type="file" (change)="onVideoSelected($event)" accept="video/*">
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="exerciceForm.invalid || isLoading">
+      {{ isLoading ? 'Enregistrement...' : 'Enregistrer' }}
+    </button>
+  </form>
+</div>

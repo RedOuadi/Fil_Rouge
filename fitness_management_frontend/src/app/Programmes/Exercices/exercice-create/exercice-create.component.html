@@ -1,0 +1,67 @@
+<div class="max-w-xl mx-auto bg-white p-6 rounded-lg shadow-md">
+  <h1 class="text-2xl font-semibold text-gray-800 mb-6">Créer un Exercice</h1>
+
+  <form [formGroup]="exerciceForm" (ngSubmit)="onSubmit()" class="space-y-4">
+
+    <!-- Nom -->
+    <div>
+      <label for="nom" class="block text-sm font-medium text-gray-700">Nom</label>
+      <input id="nom" type="text" formControlName="nom" required
+             class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"/>
+    </div>
+
+    <!-- Description -->
+    <div>
+      <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+      <textarea id="description" formControlName="description"
+                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+    </div>
+
+    <!-- Durée (minutes) -->
+    <div>
+      <label for="duree" class="block text-sm font-medium text-gray-700">Durée (minutes)</label>
+      <input id="duree" type="number" formControlName="duree"
+             class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"/>
+    </div>
+
+    <!-- Niveau -->
+    <div>
+      <label for="niveau" class="block text-sm font-medium text-gray-700">Niveau</label>
+      <select id="niveau" formControlName="niveau"
+              class="mt-1 block w-full border-gray-300 bg-white rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+        <option value="DEBUTANT">Débutant</option>
+        <option value="INTERMEDIAIRE">Intermédiaire</option>
+        <option value="AVANCE">Avancé</option>
+      </select>
+    </div>
+
+    <!-- Calories Brûlées -->
+    <div>
+      <label for="caloriesBrulees" class="block text-sm font-medium text-gray-700">Calories Brûlées</label>
+      <input id="caloriesBrulees" type="number" formControlName="caloriesBrulees"
+             class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"/>
+    </div>
+
+    <!-- Image de l'exercice -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Image de l'exercice</label>
+      <input type="file" (change)="onImageSelected($event)"
+             class="mt-1 block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer focus:outline-none"/>
+    </div>
+
+    <!-- Vidéo de l'exercice -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Vidéo de l'exercice</label>
+      <input type="file" (change)="onVideoSelected($event)"
+             class="mt-1 block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer focus:outline-none"/>
+    </div>
+
+    <!-- Submit Button -->
+    <div>
+      <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+        {{ isLoading ? 'Chargement...' : 'Créer' }}
+      </button>
+    </div>
+
+  </form>
+</div>

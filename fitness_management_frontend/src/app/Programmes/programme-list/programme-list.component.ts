@@ -80,4 +80,28 @@ export class ProgrammeListComponent implements OnInit {
       }
     });
   }
+
+  // Method to redirect to create programme page
+  redirectToCreateProgramme(): void {
+    this.router.navigate(['/coach/programme-create']); // Adjust the route based on your actual configuration
+  }
+
+// Method to redirect to update programme page
+  redirectToUpdateProgramme(programId: number): void {
+    this.router.navigate(['/coach/programme-update', programId]); // Pass the program ID to the update form
+  }
+
+  deleteProgramme(programId: number): void {
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce programme ?')) {
+      this.programmeService.deleteProgramme(programId).subscribe({
+        next: () => {
+          console.log('Programme supprimé');
+          this.loadProgrammes(this.coach?.id!); // Reload the list after deletion
+        },
+        error: (err) => {
+          console.error('Erreur lors de la suppression du programme', err);
+        }
+      });
+    }
+  }
 }

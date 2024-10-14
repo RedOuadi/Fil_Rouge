@@ -1,6 +1,10 @@
 <div class="programme-container">
   <h1 class="mat-headline-4">Programmes d'entraînement</h1>
 
+  <button mat-raised-button color="primary" (click)="redirectToCreateProgramme()">
+    <mat-icon>add</mat-icon> Créer un nouveau programme
+  </button>
+
   <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
 
   <div class="programme-grid" *ngIf="!isLoading">
@@ -20,8 +24,13 @@
 
       <mat-card-actions>
         <button mat-raised-button color="primary" (click)="viewExercises(programme.id)">
-          <mat-icon>fitness_center</mat-icon>
-          Voir les exercices
+          <mat-icon>fitness_center</mat-icon> Voir les exercices
+        </button>
+        <button mat-raised-button color="accent" (click)="redirectToUpdateProgramme(programme.id)">
+          <mat-icon>edit</mat-icon> Modifier
+        </button>
+        <button mat-raised-button color="warn" (click)="deleteProgramme(programme.id)">
+          <mat-icon>delete</mat-icon> Supprimer
         </button>
       </mat-card-actions>
     </mat-card>

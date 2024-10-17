@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import {CoachService} from "../../services/coach.service";
-import {Personne} from "../../models/personne.model";
-
+import { CoachService } from '../../services/coach.service';
+import { Personne } from '../../models/personne.model';
 
 @Component({
   selector: 'app-coach-update',
@@ -13,9 +12,9 @@ import {Personne} from "../../models/personne.model";
 export class CoachUpdateComponent implements OnInit {
   coachForm: FormGroup;
   coachId: number;
+  currentCoach: Personne | null = null;
   errorMessage: string = '';
   profileImage: File | null = null;
-  coverImage: File | null = null;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -24,68 +23,80 @@ export class CoachUpdateComponent implements OnInit {
     private router: Router
   ) {
     this.coachForm = this.formBuilder.group({
-      nom: ['', Validators.required],
-      prenom: ['', Validators.required],
+      nom: ['', [Validators.required, Validators.minLength(2)]],
+      prenom: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
       genre: ['', Validators.required],
-      role: ['ROLE_COACH', Validators.required]
+      // Role is not included in the form as it's fixed for coaches
     });
-    this.coachId = 0;
+    this.coachId = this.route.snapshot.params['id'];
   }
 
   ngOnInit(): void {
-    this.coachId = Number(this.route.snapshot.paramMap.get('id'));
     this.loadCoach();
   }
 
   loadCoach(): void {
     this.coachService.getCoachById(this.coachId).subscribe({
       next: (coach) => {
-        this.coachForm.patchValue(coach);
+        this.currentCoach = coach;
+        this.coachForm.patchValue({
+          nom: coach.nom,
+          prenom: coach.prenom,
+          email: coach.email,
+          genre: coach.genre,
+        });
       },
       error: (error) => {
-        this.errorMessage = 'Error loading coach. Please try again.';
-        console.error('There was an error!', error);
+        console.error('Error loading coach', error);
+        this.errorMessage = 'Error loading coach details';
       }
     });
   }
 
-  onFileChange(event: Event, type: 'profile' | 'cover'): void {
+  onFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
-      if (type === 'profile') {
-        this.profileImage = input.files[0];
-      } else {
-        this.coverImage = input.files[0];
-      }
+      this.profileImage = input.files[0];
     }
+  }
+
+  getProfileImageUrl(): string | null {
+    return this.currentCoach?.profileImage?.imageUrl || null;
   }
 
   onSubmit(): void {
     if (this.coachForm.valid) {
       const formData = new FormData();
-      const coachData: Personne = { ...this.coachForm.value, id: this.coachId };
 
-      // Convert the form data to a JSON string
-      const coachDataJson = JSON.stringify(coachData);
-      formData.append('personne', coachDataJson);
+      const coachJson = JSON.stringify({
+        nom: this.coachForm.get('nom')?.value,
+        prenom: this.coachForm.get('prenom')?.value,
+        email: this.coachForm.get('email')?.value,
+        genre: this.coachForm.get('genre')?.value,
+        role: 'ROLE_COACH'
+      });
+
+      formData.append('personne', new Blob([coachJson], { type: 'application/json' }));
 
       if (this.profileImage) {
-        formData.append('profileImage', this.profileImage, this.profileImage.name);
-      }
-      if (this.coverImage) {
-        formData.append('coverImage', this.coverImage, this.coverImage.name);
+        formData.append('profileImage', this.profileImage);
       }
 
       this.coachService.updateCoach(this.coachId, formData).subscribe({
-        next: () => {
+        next: (response) => {
+          console.log('Coach updated successfully', response);
           this.router.navigate(['/coaches']);
         },
         error: (error) => {
-          this.errorMessage = 'Error updating coach. Please try again.';
-          console.error('There was an error!', error);
+          console.error('Update error', error);
+          this.errorMessage = error.error?.message || 'An error occurred during update';
         }
       });
+    } else {
+      this.errorMessage = 'Please fill in all required fields correctly.';
     }
   }
+
+  protected readonly Object = Object;
 }

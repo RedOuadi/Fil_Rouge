@@ -34,8 +34,9 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-
-//                        .requestMatchers("/auth/generateToken", "/auth/register").permitAll()
+                                .requestMatchers("/dashboard-admin/**").hasRole("ADMIN") // Accessible uniquement par les Admins
+       .requestMatchers("/dashboard-coach/**").hasRole("COACH") // Accessible uniquement par les Coaches
+       .requestMatchers("/dashboard-user/**").hasRole("UTILISATEUR") // Accessible uniquement par les Utilisateurs
                                 .anyRequest().permitAll()
 
 //

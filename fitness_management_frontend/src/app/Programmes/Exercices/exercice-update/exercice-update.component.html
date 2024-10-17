@@ -1,60 +1,117 @@
-<div class="exercice-container">
-  <h1 class="mat-headline-4">Modifier l'exercice</h1>
+<div class="exercice-container mx-auto p-4">
+  <h1 class="text-2xl font-bold mb-4">Modifier l'exercice</h1>
 
-  <form [formGroup]="exerciceForm" (ngSubmit)="onSubmit()">
-    <mat-form-field>
-      <mat-label>Nom</mat-label>
-      <input matInput formControlName="nom" required>
-      <mat-error *ngIf="exerciceForm.get('nom')?.hasError('required')">
+  <form [formGroup]="exerciceForm" (ngSubmit)="onSubmit()" class="space-y-4">
+    <div>
+      <label for="nom" class="block text-sm font-medium text-gray-700">Nom</label>
+      <input
+        id="nom"
+        type="text"
+        formControlName="nom"
+        required
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+      />
+      <p *ngIf="exerciceForm.get('nom')?.hasError('required')" class="text-red-600 text-sm mt-1">
         Le nom est requis
-      </mat-error>
-    </mat-form-field>
+      </p>
+    </div>
 
-    <mat-form-field>
-      <mat-label>Description</mat-label>
-      <textarea matInput formControlName="description" required></textarea>
-      <mat-error *ngIf="exerciceForm.get('description')?.hasError('required')">
+    <div>
+      <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+      <textarea
+        id="description"
+        formControlName="description"
+        required
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+      ></textarea>
+      <p *ngIf="exerciceForm.get('description')?.hasError('required')" class="text-red-600 text-sm mt-1">
         La description est requise
-      </mat-error>
-    </mat-form-field>
+      </p>
+    </div>
 
-    <mat-form-field>
-      <mat-label>Durée (minutes)</mat-label>
-      <input type="number" matInput formControlName="duree" required>
-      <mat-error *ngIf="exerciceForm.get('duree')?.hasError('required')">
+    <div>
+      <label for="duree" class="block text-sm font-medium text-gray-700">Durée (minutes)</label>
+      <input
+        id="duree"
+        type="number"
+        formControlName="duree"
+        required
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+      />
+      <p *ngIf="exerciceForm.get('duree')?.hasError('required')" class="text-red-600 text-sm mt-1">
         La durée est requise
-      </mat-error>
-    </mat-form-field>
+      </p>
+    </div>
 
-    <mat-form-field>
-      <mat-label>Niveau</mat-label>
-      <input matInput formControlName="niveau" required>
-      <mat-error *ngIf="exerciceForm.get('niveau')?.hasError('required')">
+    <div>
+      <label for="niveau" class="block text-sm font-medium text-gray-700">Niveau</label>
+      <input
+        id="niveau"
+        type="text"
+        formControlName="niveau"
+        required
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+      />
+      <p *ngIf="exerciceForm.get('niveau')?.hasError('required')" class="text-red-600 text-sm mt-1">
         Le niveau est requis
-      </mat-error>
-    </mat-form-field>
+      </p>
+    </div>
 
-    <mat-form-field>
-      <mat-label>Calories Brûlées</mat-label>
-      <input type="number" matInput formControlName="caloriesBrulees" required>
-      <mat-error *ngIf="exerciceForm.get('caloriesBrulees')?.hasError('required')">
+    <div>
+      <label for="caloriesBrulees" class="block text-sm font-medium text-gray-700">Calories Brûlées</label>
+      <input
+        id="caloriesBrulees"
+        type="number"
+        formControlName="caloriesBrulees"
+        required
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+      />
+      <p *ngIf="exerciceForm.get('caloriesBrulees')?.hasError('required')" class="text-red-600 text-sm mt-1">
         Les calories brûlées sont requises
-      </mat-error>
-    </mat-form-field>
+      </p>
+    </div>
 
-    <mat-form-field>
-      <mat-label>ID du Programme</mat-label>
-      <input type="number" matInput formControlName="programmeId" required>
-      <mat-error *ngIf="exerciceForm.get('programmeId')?.hasError('required')">
+    <div>
+      <label for="programmeId" class="block text-sm font-medium text-gray-700">ID du Programme</label>
+      <input
+        id="programmeId"
+        type="number"
+        formControlName="programmeId"
+        required
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+      />
+      <p *ngIf="exerciceForm.get('programmeId')?.hasError('required')" class="text-red-600 text-sm mt-1">
         L'ID du programme est requis
-      </mat-error>
-    </mat-form-field>
+      </p>
+    </div>
 
-    <input type="file" (change)="onImageSelected($event)" accept="image/*">
-    <input type="file" (change)="onVideoSelected($event)" accept="video/*">
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Sélectionnez une image</label>
+      <input
+        type="file"
+        (change)="onImageSelected($event)"
+        accept="image/*"
+        class="mt-1 block w-full text-gray-700"
+      />
+    </div>
 
-    <button mat-raised-button color="primary" type="submit" [disabled]="exerciceForm.invalid || isLoading">
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Sélectionnez une vidéo</label>
+      <input
+        type="file"
+        (change)="onVideoSelected($event)"
+        accept="video/*"
+        class="mt-1 block w-full text-gray-700"
+      />
+    </div>
+
+    <button
+      type="submit"
+      [disabled]="exerciceForm.invalid || isLoading"
+      class="px-4 py-2 bg-indigo-600 text-white rounded-md shadow hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+    >
       {{ isLoading ? 'Enregistrement...' : 'Enregistrer' }}
     </button>
   </form>
 </div>
+

@@ -1,0 +1,22 @@
+/* Container to center the image */
+.home-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full viewport height */
+  text-align: center;
+  background-color: #f0f0f0; /* Light background for contrast */
+}
+
+/* Image styling */
+.fitness-image {
+  max-width: 100%; /* Ensures the image scales properly */
+  max-height: 80vh; /* Limits the height to 80% of the viewport */
+  object-fit: cover; /* Ensures the image covers the available space */
+  border-radius: 10px; /* Optional: Rounded corners */
+}
+
+/* Optional: Link styling */
+.home-link {
+  text-decoration: none;
+}

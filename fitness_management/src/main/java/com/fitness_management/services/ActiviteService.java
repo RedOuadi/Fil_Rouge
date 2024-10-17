@@ -7,6 +7,7 @@ import com.fitness_management.models.Image;
 import com.fitness_management.models.Video;
 import com.fitness_management.repositories.ActiviteRepository;
 import com.fitness_management.models.CloudinaryResponse;
+import com.fitness_management.services.interfaces.ActiviteServiceI;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ActiviteService {
+public class ActiviteService implements ActiviteServiceI {
 
     @Autowired
     private ActiviteRepository activiteRepository;
@@ -29,6 +30,7 @@ public class ActiviteService {
     @Autowired
     private CloudinaryService cloudinaryService;
 
+    @Override
     @Transactional
     public ActiviteDTO createActivite(ActiviteDTO activiteDTO, MultipartFile imageFile, MultipartFile videoFile) {
         Activite activite = activiteMapper.toEntity(activiteDTO);
@@ -57,21 +59,24 @@ public class ActiviteService {
         return activiteMapper.toDTO(savedActivite);
     }
 
+    @Override
     public List<ActiviteDTO> getAllActivites() {
         List<Activite> activites = activiteRepository.findAll();
         return activites.stream().map(activiteMapper::toDTO).toList();
     }
 
+    @Override
     public Optional<ActiviteDTO> getActiviteById(Long id) {
         return activiteRepository.findById(id).map(activiteMapper::toDTO);
     }
 
+    @Override
     public List<ActiviteDTO> getActivitesByUtilisateurId(Long utilisateurId) {
         List<Activite> activites = activiteRepository.findByUtilisateurId(utilisateurId);
         return activites.stream().map(activiteMapper::toDTO).toList();
     }
 
-
+    @Override
     @Transactional
     public ActiviteDTO updateActivite(Long id, ActiviteDTO activiteDTO, MultipartFile imageFile, MultipartFile videoFile) {
         Activite existingActivite = activiteRepository.findById(id)
@@ -115,8 +120,8 @@ public class ActiviteService {
         return activiteMapper.toDTO(updatedActivite);
     }
 
+    @Override
     public void deleteActivite(Long id) {
         activiteRepository.deleteById(id);
     }
 }
-

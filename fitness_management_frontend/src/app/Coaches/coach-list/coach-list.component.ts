@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {Personne} from "../../models/personne.model";
-import {CoachService} from "../../services/coach.service";
-
+import { Personne } from '../../models/personne.model';
+import { CoachService } from '../../services/coach.service';
 
 @Component({
   selector: 'app-coach-list',
@@ -11,6 +10,7 @@ import {CoachService} from "../../services/coach.service";
 export class CoachListComponent implements OnInit {
   coaches: Personne[] = [];
   errorMessage: string = '';
+  searchTerm: string = '';
 
   constructor(private coachService: CoachService) {}
 
@@ -46,5 +46,13 @@ export class CoachListComponent implements OnInit {
 
   getProfileImageUrl(coach: Personne): string {
     return coach.profileImage?.imageUrl || 'assets/default-profile.png';
+  }
+
+  filteredCoaches(): Personne[] {
+    return this.coaches.filter(coach =>
+      coach.nom.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+      coach.prenom.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+      coach.email.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
   }
 }

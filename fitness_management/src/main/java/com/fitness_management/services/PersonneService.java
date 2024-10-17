@@ -6,6 +6,7 @@ import com.fitness_management.mapper.PersonneMapper;
 import com.fitness_management.models.*;
 import com.fitness_management.repositories.PersonneRepository;
 import com.fitness_management.security.JwtAuth;
+import com.fitness_management.services.interfaces.PersonneServiceI;
 import com.fitness_management.util.FileUploadUtil;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -26,7 +27,7 @@ import java.util.Optional;
 
 
 @Service
-public class PersonneService  {
+public class PersonneService  implements PersonneServiceI {
 
     @Autowired
     private PersonneRepository personneRepository;
@@ -46,6 +47,9 @@ public class PersonneService  {
     private PersonneMapper personneMapper;
     private static final Logger logger = LoggerFactory.getLogger(PersonneService.class);
 
+
+
+    @Override
     @Transactional
     public PersonneDTO registerPersonne(PersonneDTO personneDTO, MultipartFile profileImage) {
         logger.info("Registering new personne: {}", personneDTO.getEmail());
@@ -95,6 +99,7 @@ public class PersonneService  {
         return personneMapper.toDTO(savedPersonne);
     }
 
+    @Override
     public Optional<Personne> authenticatePersonne(String email, String motDePasse) {
         Optional<Personne> personne = personneRepository.findByEmail(email);
 
@@ -110,19 +115,21 @@ public class PersonneService  {
         return personne.getRole().toString();
     }
 
-
+    @Override
     public Optional<Personne> findByEmail(String email) {
         return personneRepository.findByEmail(email);
     }
-
+    @Override
     public List<Personne> findAll() {
         return personneRepository.findAll();
     }
-
+    @Override
     public void deletePersonne(Long id) {
         personneRepository.deleteById(id);
     }
 
+
+    @Override
     public void createAdminUserIfNotExist() {
         String adminEmail = "admin@example.com";
         Optional<Personne> existingAdmin = personneRepository.findByEmail(adminEmail);
@@ -134,11 +141,13 @@ public class PersonneService  {
             personneRepository.save(admin);
         }
     }
-
+    @Override
     public Optional<Personne> findById(Long id) {
         return personneRepository.findById(id);
     }
 
+
+    @Override
     @Transactional
     public PersonneDTO updatePersonne(Long id, PersonneDTO updatedPersonneDTO, MultipartFile profileImage) {
         logger.info("Updating personne with ID: {}", id);
@@ -198,19 +207,25 @@ public class PersonneService  {
         return personneMapper.toDTO(savedPersonne);
 
     }
-
+    @Override
     public long countUsers() {
         return personneRepository.countByRole(Role.ROLE_UTILISATEUR);
     }
 
+
+    @Override
     public long countCoaches() {
         return personneRepository.countByRole(Role.ROLE_COACH);
     }
 
+
+    @Override
     public List<Personne> getUsers() {
         return personneRepository.findAllByRole(Role.ROLE_UTILISATEUR);
     }
 
+
+    @Override
     public List<Personne> getCoaches() {
         return personneRepository.findAllByRole(Role.ROLE_COACH);
     }

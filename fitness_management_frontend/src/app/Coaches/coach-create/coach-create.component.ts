@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import {CoachService} from "../../services/coach.service";
-import {Personne} from "../../models/personne.model";
+import { CoachService } from "../../services/coach.service";
+import { Personne } from "../../models/personne.model";
 
 @Component({
   selector: 'app-coach-create',
@@ -13,7 +13,6 @@ export class CoachCreateComponent implements OnInit {
   coachForm: FormGroup;
   errorMessage: string = '';
   profileImage: File | null = null;
-  coverImage: File | null = null;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -21,53 +20,57 @@ export class CoachCreateComponent implements OnInit {
     private router: Router
   ) {
     this.coachForm = this.formBuilder.group({
-      nom: ['', Validators.required],
-      prenom: ['', Validators.required],
+      nom: ['', [Validators.required, Validators.minLength(2)]],
+      prenom: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       genre: ['', Validators.required],
-      role: ['ROLE_COACH', Validators.required]
+      // Role is set to ROLE_COACH by default in the backend
     });
   }
 
   ngOnInit(): void {}
 
-  onFileChange(event: Event, type: 'profile' | 'cover'): void {
+  onFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
-      if (type === 'profile') {
-        this.profileImage = input.files[0];
-      } else {
-        this.coverImage = input.files[0];
-      }
+      this.profileImage = input.files[0];
     }
   }
 
   onSubmit(): void {
     if (this.coachForm.valid) {
       const formData = new FormData();
-      const coachData: Personne = this.coachForm.value;
 
-      // Convert the form data to a JSON string
-      const coachDataJson = JSON.stringify(coachData);
-      formData.append('personne', coachDataJson);
+      const coachJson = JSON.stringify({
+        nom: this.coachForm.get('nom')?.value,
+        prenom: this.coachForm.get('prenom')?.value,
+        email: this.coachForm.get('email')?.value,
+        motDePasse: this.coachForm.get('password')?.value,
+        genre: this.coachForm.get('genre')?.value,
+        role: 'ROLE_COACH'
+      });
+
+      formData.append('personne', new Blob([coachJson], { type: 'application/json' }));
 
       if (this.profileImage) {
-        formData.append('profileImage', this.profileImage, this.profileImage.name);
-      }
-      if (this.coverImage) {
-        formData.append('coverImage', this.coverImage, this.coverImage.name);
+        formData.append('profileImage', this.profileImage);
       }
 
       this.coachService.registerCoach(formData).subscribe({
-        next: () => {
+        next: (response) => {
+          console.log('Coach registered successfully', response);
           this.router.navigate(['/coaches']);
         },
         error: (error) => {
-          this.errorMessage = 'Error creating coach. Please try again.';
-          console.error('There was an error!', error);
+          console.error('Registration error', error);
+          this.errorMessage = error.error?.message || 'An error occurred during registration';
         }
       });
+    } else {
+      this.errorMessage = 'Please fill in all required fields correctly.';
     }
   }
+
+  protected readonly Object = Object;
 }

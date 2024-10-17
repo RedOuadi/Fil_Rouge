@@ -1,10 +1,9 @@
 package com.fitness_management.services;
 
 import com.cloudinary.Cloudinary;
-
 import com.fitness_management.exception.FuncErrorException;
-
 import com.fitness_management.models.CloudinaryResponse;
+import com.fitness_management.services.interfaces.CloudinaryServiceI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +15,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class CloudinaryService  {
+public class CloudinaryService implements CloudinaryServiceI {
 
     @Autowired
     private Cloudinary cloudinary;
 
     private static final Logger logger = LoggerFactory.getLogger(CloudinaryService.class);
 
-
+    @Override
     public CloudinaryResponse uploadFile(MultipartFile file, String fileName, String resourceType) {
         if (file == null || file.isEmpty()) {
             logger.error("File is null or empty");
@@ -53,25 +52,7 @@ public class CloudinaryService  {
         }
     }
 
-
-//
-//    @Override
-//    public void deleteFile(String publicId) {
-//        try {
-//            Map<String, Object> result = cloudinary.uploader().destroy(publicId, Map.of(
-//                    "resource_type", "auto" // Automatically detects resource type (image, video, etc.)
-//            ));
-//            if (!"ok".equals(result.get("result"))) {
-//                throw new FuncErrorException("Failed to delete file with public_id: " + publicId);
-//            }
-//        } catch (Exception e) {
-//            throw new FuncErrorException("Error deleting file from Cloudinary: " + e.getMessage());
-//        }
-//    }
-
-
-
-
+    @Override
     public void deleteFile(String publicId, String resourceType) {
         try {
             Map<String, String> params = new HashMap<>();
@@ -82,7 +63,4 @@ public class CloudinaryService  {
             throw new RuntimeException("Error deleting file from Cloudinary", e);
         }
     }
-
-
-
 }

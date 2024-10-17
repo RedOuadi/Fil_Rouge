@@ -5,6 +5,8 @@ import com.fitness_management.mapper.ExerciceMapper;
 import com.fitness_management.models.*;
 import com.fitness_management.repositories.ExerciceRepository;
 import com.fitness_management.repositories.ProgrammeEntrainementRepository;
+import com.fitness_management.services.interfaces.ExerciceServiceI;
+
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ExerciceService {
+public class ExerciceService implements ExerciceServiceI {
 
     @Autowired
     private ExerciceRepository exerciceRepository;
@@ -28,82 +30,72 @@ public class ExerciceService {
 
     @Autowired
     private ProgrammeEntrainementRepository programmeEntrainementRepository;
+
+    @Override
     @Transactional
     public ExerciceDTO createExercice(ExerciceDTO exerciceDTO, MultipartFile imageFile, MultipartFile videoFile) {
-        // Convertir le DTO en entité
         Exercice exercice = exerciceMapper.toEntity(exerciceDTO);
 
-        // Vérifier et uploader l'image sur Cloudinary si fournie
+        // Upload image if provided
         if (imageFile != null && !imageFile.isEmpty()) {
             CloudinaryResponse imageResponse = cloudinaryService.uploadFile(imageFile, "exercice_image", "image");
-
-            // S'assurer que l'objet Image est créé
             if (exercice.getExerciceImage() == null) {
                 exercice.setExerciceImage(new Image());
             }
-
-            // Définir les propriétés de l'image
             exercice.getExerciceImage().setImageUrl(imageResponse.getUrl());
             exercice.getExerciceImage().setCloudinaryImageId(imageResponse.getPublicId());
         }
 
-        // Vérifier et uploader la vidéo sur Cloudinary si fournie
+        // Upload video if provided
         if (videoFile != null && !videoFile.isEmpty()) {
             CloudinaryResponse videoResponse = cloudinaryService.uploadFile(videoFile, "exercice_video", "video");
-
-            // S'assurer que l'objet Video est créé
             if (exercice.getExerciceVideo() == null) {
                 exercice.setExerciceVideo(new Video());
             }
-
-            // Définir les propriétés de la vidéo
             exercice.getExerciceVideo().setVideoUrl(videoResponse.getUrl());
             exercice.getExerciceVideo().setCloudinaryVideoId(videoResponse.getPublicId());
-
         }
 
-        // Sauvegarder l'exercice
         Exercice savedExercice = exerciceRepository.save(exercice);
         return exerciceMapper.toDTO(savedExercice);
     }
 
+    @Override
     public List<ExerciceDTO> getAllExercices() {
         List<Exercice> exercices = exerciceRepository.findAll();
         return exercices.stream().map(exerciceMapper::toDTO).toList();
     }
 
+    @Override
     public Optional<ExerciceDTO> getExerciceById(Long id) {
         return exerciceRepository.findById(id).map(exerciceMapper::toDTO);
     }
 
+    @Override
     public List<ExerciceDTO> getExercicesByProgrammeId(Long programmeId) {
         List<Exercice> exercices = exerciceRepository.findByProgrammeId(programmeId);
         return exercices.stream().map(exerciceMapper::toDTO).toList();
     }
 
-
+    @Override
     @Transactional
     public ExerciceDTO updateExercice(Long id, ExerciceDTO exerciceDTO, MultipartFile imageFile, MultipartFile videoFile) {
-        // Recherche de l'exercice existant
         Exercice existingExercice = exerciceRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Exercice not found with id: " + id));
 
-        // Mise à jour des champs de l'exercice directement
         existingExercice.setNom(exerciceDTO.getNom());
         existingExercice.setDescription(exerciceDTO.getDescription());
         existingExercice.setDuree(exerciceDTO.getDuree());
-        existingExercice.setNiveau(Niveau.valueOf(exerciceDTO.getNiveau().toUpperCase()));  // Conversion de l'énumération
+        existingExercice.setNiveau(Niveau.valueOf(exerciceDTO.getNiveau().toUpperCase()));
         existingExercice.setCaloriesBrulees(exerciceDTO.getCaloriesBrulees());
 
-        // Mise à jour de l'image si nécessaire
+        // Update image if necessary
         if (imageFile != null && !imageFile.isEmpty()) {
             CloudinaryResponse imageResponse = cloudinaryService.uploadFile(imageFile, "exercice_image", "image");
             if (existingExercice.getExerciceImage() != null) {
-                // Mise à jour de l'image existante
                 existingExercice.getExerciceImage().setImageUrl(imageResponse.getUrl());
                 existingExercice.getExerciceImage().setCloudinaryImageId(imageResponse.getPublicId());
             } else {
-                // Création d'une nouvelle image si elle n'existe pas encore
                 Image newImage = new Image();
                 newImage.setImageUrl(imageResponse.getUrl());
                 newImage.setCloudinaryImageId(imageResponse.getPublicId());
@@ -111,15 +103,13 @@ public class ExerciceService {
             }
         }
 
-        // Mise à jour de la vidéo si nécessaire
+        // Update video if necessary
         if (videoFile != null && !videoFile.isEmpty()) {
             CloudinaryResponse videoResponse = cloudinaryService.uploadFile(videoFile, "exercice_video", "video");
             if (existingExercice.getExerciceVideo() != null) {
-                // Mise à jour de la vidéo existante
                 existingExercice.getExerciceVideo().setVideoUrl(videoResponse.getUrl());
                 existingExercice.getExerciceVideo().setCloudinaryVideoId(videoResponse.getPublicId());
             } else {
-                // Création d'une nouvelle vidéo si elle n'existe pas encore
                 Video newVideo = new Video();
                 newVideo.setVideoUrl(videoResponse.getUrl());
                 newVideo.setCloudinaryVideoId(videoResponse.getPublicId());
@@ -127,14 +117,19 @@ public class ExerciceService {
             }
         }
 
-        // Sauvegarde de l'exercice mis à jour
         Exercice updatedExercice = exerciceRepository.save(existingExercice);
-
-        // Retour du DTO mis à jour
         return exerciceMapper.toDTO(updatedExercice);
     }
 
+    @Override
     public void deleteExercice(Long id) {
         exerciceRepository.deleteById(id);
     }
+
+    @Override
+    public int countExercice() {
+        return exerciceRepository.cont();
+    }
+
+
 }

@@ -1,1 +1,84 @@
-<p>coach-create works!</p>
+<div class="container">
+  <h2>Create New Coach</h2>
+  <form [formGroup]="coachForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="nom">Nom</label>
+      <input type="text" id="nom" formControlName="nom" class="form-control" />
+      <div *ngIf="coachForm.controls['nom'].invalid && coachForm.controls['nom'].touched" class="text-danger">
+        <small *ngIf="coachForm.controls['nom'].hasError('required')">Nom is required.</small>
+        <small *ngIf="coachForm.controls['nom'].hasError('minlength')">Nom must be at least 2 characters long.</small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="prenom">Prénom</label>
+      <input type="text" id="prenom" formControlName="prenom" class="form-control" />
+      <div *ngIf="coachForm.controls['prenom'].invalid && coachForm.controls['prenom'].touched" class="text-danger">
+        <small *ngIf="coachForm.controls['prenom'].hasError('required')">Prénom is required.</small>
+        <small *ngIf="coachForm.controls['prenom'].hasError('minlength')">Prénom must be at least 2 characters long.</small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" formControlName="email" class="form-control" />
+      <div *ngIf="coachForm.controls['email'].invalid && coachForm.controls['email'].touched" class="text-danger">
+        <small *ngIf="coachForm.controls['email'].hasError('required')">Email is required.</small>
+        <small *ngIf="coachForm.controls['email'].hasError('email')">Please enter a valid email address.</small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" formControlName="password" class="form-control" />
+      <div *ngIf="coachForm.controls['password'].invalid && coachForm.controls['password'].touched" class="text-danger">
+        <small *ngIf="coachForm.controls['password'].hasError('required')">Password is required.</small>
+        <small *ngIf="coachForm.controls['password'].hasError('minlength')">Password must be at least 6 characters long.</small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="genre">Genre *</label>
+      <select id="genre" formControlName="genre" class="form-control">
+        <option value="">Select Genre</option>
+        <option value="HOMME">Homme</option>
+        <option value="FEMME">Femme</option>
+      </select>
+      <div *ngIf="coachForm.get('genre')?.invalid && coachForm.get('genre')?.touched" class="text-danger">
+        <small>Genre is required.</small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="profileImage">Profile Image (optional)</label>
+      <input
+        id="profileImage"
+        type="file"
+        accept="image/*"
+        (change)="onFileChange($event)"
+        class="form-control-file"
+      />
+    </div>
+
+    <button type="submit" [disabled]="coachForm.invalid" class="btn btn-primary">
+      Create Coach
+    </button>
+  </form>
+
+  <!-- Error message display -->
+  <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Form validation errors display -->
+  <div *ngIf="coachForm.invalid && coachForm.touched" class="alert alert-warning mt-3">
+    <p>Form is invalid. Please correct the errors below:</p>
+    <ul>
+      <li *ngFor="let key of Object.keys(coachForm.controls)">
+        <div *ngIf="coachForm.controls[key].invalid && coachForm.controls[key].touched">
+          {{ key }}: {{ coachForm.controls[key].errors | json }}
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>

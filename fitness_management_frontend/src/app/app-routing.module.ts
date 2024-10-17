@@ -22,9 +22,11 @@ import {ObjectifUpdateComponent} from "./objectifs/objectif-update/objectif-upda
 import {ActiviteListComponent} from "./Activities/activite-list/activite-list.component";
 import {ActiviteCreateComponent} from "./Activities/activite-create/activite-create.component";
 import {ActiviteUpdateComponent} from "./Activities/activite-update/activite-update.component";
+import {FooterComponent} from "./footer/footer.component";
+import {HomeComponent} from "./home/home.component";
 
 const routes: Routes = [
-  { path: '', component: LoginComponent  },
+  { path: '', component: HomeComponent  },
   { path: 'login', component: LoginComponent },
   { path: 'dashboard-admin', component: DashboardAdminComponent },
   { path: 'registre', component: RegisterComponent },
@@ -36,9 +38,10 @@ const routes: Routes = [
   { path: 'header', component: HeaderComponent },
   { path: 'exercice-list', component: ExerciceListComponent },
   { path: 'exercice-list/:programId', component: ExerciceListComponent },
-  // This can be used for listing exercises based on programId
+
   { path: 'exercice-create/:programmeId', component: ExerciceCreateComponent }, // Route for creating exercise
   { path: 'exercice-update/:id', component: ExerciceUpdateComponent },
+  {path : 'footer' , component : FooterComponent   },
 
   {
     path: 'admin',

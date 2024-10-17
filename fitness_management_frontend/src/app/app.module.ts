@@ -42,6 +42,8 @@ import { ActiviteCreateComponent } from './Activities/activite-create/activite-c
 import { ActiviteUpdateComponent } from './Activities/activite-update/activite-update.component';
 import { HomeComponent } from './home/home.component';
 import {MatDatepickerModule} from "@angular/material/datepicker";
+import { FooterComponent } from './footer/footer.component';
+import { TestComponent } from './test/test.component';
 
 @NgModule({
   declarations: [
@@ -72,7 +74,9 @@ import {MatDatepickerModule} from "@angular/material/datepicker";
       ActiviteListComponent,
       ActiviteCreateComponent,
       ActiviteUpdateComponent,
-      HomeComponent
+      HomeComponent,
+      FooterComponent,
+      TestComponent
   ],
   imports: [
     BrowserModule,
